@@ -1,0 +1,40 @@
+substitutions:
+  wifi_ssid: !secret wifi_ssid
+  wifi_password: !secret wifi_password
+
+esphome:
+  name: tini
+  platform: ESP8266
+  board: d1_mini
+
+wifi:
+  ssid: ${wifi_ssid}
+  password: ${wifi_password}
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  #  ap:
+  #  ssid: "Tini Fallback Hotspot"
+  #  password: "5FeZ03Jxrwhl"
+
+  #captive_portal:
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+
+ota:
+
+mqtt:
+  broker: 192.168.202.4
+  port: 1883
+  
+output:
+  - platform: gpio
+    pin: GPIO4
+    id: 'light_switch'
+switch:
+  - platform: output
+    name: "Light-Switch Output"
+    output: 'light_switch'

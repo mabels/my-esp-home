@@ -1,0 +1,83 @@
+substitutions:
+  wifi_ssid: !secret wifi_ssid
+  wifi_password: !secret wifi_password
+
+esphome:
+  name: lora_recv
+  platform: ESP32
+  board: ttgo-lora32-v1
+  includes:
+    - lora_sender.h
+  libraries:
+    - "LoRa"
+    - "SPI"
+
+wifi:
+  ssid: ${wifi_ssid}
+  password: ${wifi_password}
+  #captive_portal:
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+
+ota:
+
+mqtt:
+  broker: 192.168.202.4
+  port: 1883
+    # ...
+
+i2c:
+  sda: GPIO4
+  scl: GPIO15
+
+display:
+  - platform: ssd1306_i2c
+    model: "SSD1306 128x64"
+    reset_pin: GPIO16
+    address: 0x3C
+    lambda: |-
+      it.print(0, 0, id(my_font), id(lora_recv).state.c_str());
+
+spi:
+  clk_pin: GPIO5
+  mosi_pin: GPIO27
+  miso_pin: GPIO19
+
+font:
+  - file: "Sansation_Regular.ttf"
+    id: my_font
+    size: 20
+
+text_sensor:
+- platform: custom
+  lambda: |-
+      auto my_custom = new LoRaComponent();
+      return {my_custom};
+  text_sensors:
+  
+- platform: mqtt_subscribe
+  name: "lora_recv"
+  id: lora_recv
+  topic: lora_recv/send
+  on_value:
+    then:
+      - lambda: |-
+          LoRa.beginPacket();
+          LoRa.print(x.c_str());
+          LoRa.endPacket();
+
+
+#display:
+#  - platform: ...
+#    # ...
+#    lambda: |-
+#      it.printf(0, 0, id(font), "The data is: %s", id(mysensor).state.c_str());
+#
+#
+# text_sensors:
+#    name: "Lora Text Sensor"
+

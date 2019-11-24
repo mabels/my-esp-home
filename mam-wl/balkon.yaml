@@ -1,0 +1,84 @@
+substitutions:
+  wifi_ssid: !secret wifi_ssid
+  wifi_password: !secret wifi_password
+
+esphome:
+  name: balkon
+  platform: ESP8266
+  board: esp01_1m
+
+wifi:
+  ssid: ${wifi_ssid}
+  password: ${wifi_password}
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  #  ap:
+  #  ssid: "Tini Fallback Hotspot"
+  #  password: "5FeZ03Jxrwhl"
+
+  #captive_portal:
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+#api:
+
+ota:
+
+mqtt:
+  broker: 192.168.202.4
+#  port: 1883
+  
+switch:
+  - platform: gpio
+    pin: GPIO12
+    name: 'relay_1'
+    id: 'relay_1'
+  - platform: gpio
+    pin: GPIO5
+    name: 'relay_2'
+    id: 'relay_2'
+
+binary_sensor:
+#  - platform: template
+#    name: "button_state_1"
+#    id: button_state_1
+  - platform: gpio
+    pin:
+      number: GPIO0
+      inverted: True
+    name: "botton_1"
+    id: "button_1"
+    filters:
+      - delayed_on: 50ms
+    on_release:
+      then:
+        - switch.toggle: relay_1
+          
+#    on_press:
+#      then:
+#        lambda: |-
+#          static bool state = false;
+#          state = !state;
+#          id(button_state_1).publish_state(state);
+#  - platform: template
+#    name: "button_state_2"
+#    id: button_state_2
+  - platform: gpio
+    pin:
+      number: GPIO9
+      inverted: True
+    name: "botton_2"
+    id: "button_2"
+    filters:
+      - delayed_on: 50ms
+    on_release:
+      then:
+        - switch.toggle: relay_2
+#   on_press:
+#     then:
+#        lambda: |-
+#          static bool state = false;
+#          state = !state;
+#          id(button_state_2).publish_state(state);

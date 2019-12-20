@@ -121,3 +121,7 @@ binary_sensor:
             topic: ${device_name}/binary_sensor/unten-links/PRESS_SHORT
             payload: "PRESS_SHORT"
 
+    
+sensor:
+  - platform: uptime
+    name: uptime

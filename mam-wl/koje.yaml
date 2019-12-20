@@ -53,3 +53,8 @@ output:
   #   - platform: output
   #     name: "Light-Switch Output"
   #     output: 'light_switch'
+  
+      
+sensor:
+  - platform: uptime
+    name: uptime

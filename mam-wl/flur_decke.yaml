@@ -34,3 +34,8 @@ switch:
   - platform: gpio
     name: "flur_decke"
     pin: GPIO04
+
+    
+sensor:
+  - platform: uptime
+    name: uptime

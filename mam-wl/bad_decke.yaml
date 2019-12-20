@@ -29,8 +29,12 @@ ota:
 mqtt:
   broker: 192.168.202.4
 #  port: 1883
-  
+
 switch:
   - platform: gpio
     name: "bad_decke"
     pin: GPIO04
+
+sensor:
+  - platform: uptime
+    name: uptime

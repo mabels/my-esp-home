@@ -53,4 +53,8 @@ output:
   - platform: esp8266_pwm
     id: output_ww
     pin: GPIO14
+    
+sensor:
+  - platform: uptime
+    name: uptime
 

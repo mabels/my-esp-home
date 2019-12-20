@@ -45,4 +45,7 @@ light:
       - addressable_fireworks:
       - addressable_rainbow:
       
-
+    
+sensor:
+  - platform: uptime
+    name: uptime

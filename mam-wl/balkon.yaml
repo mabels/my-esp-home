@@ -82,3 +82,7 @@ binary_sensor:
 #          static bool state = false;
 #          state = !state;
 #          id(button_state_2).publish_state(state);
+
+sensor:
+  - platform: uptime
+    name: uptime

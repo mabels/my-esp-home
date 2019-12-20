@@ -27,9 +27,10 @@ mqtt:
 
 light:
   - platform: neopixelbus
+    default_transition_length: 0s
     type: GRBW
-    pin: D6
-    variant: 800KBPS
+    pin: D5
+    variant: 400KBPS
     method: BIT_BANG
     num_leds: 21
     name: "schrank-r"
@@ -40,9 +41,10 @@ light:
     #  - addressable_rainbow:
       
   - platform: neopixelbus
+    default_transition_length: 0s
     type: GRBW
-    pin: D5
-    variant: 800KBPS
+    pin: D6
+    variant: 400KBPS
     method: BIT_BANG
     num_leds: 21
     name: "schrank-l"
@@ -61,3 +63,8 @@ output:
     pin: D1
     frequency: 1000 Hz
     id: schrank_led
+    
+        
+sensor:
+  - platform: uptime
+    name: uptime

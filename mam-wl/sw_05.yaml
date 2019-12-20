@@ -31,6 +31,10 @@ mqtt:
   broker: 192.168.202.4
 #  port: 1883
 
+sensor:
+  - platform: uptime
+    name: uptime
+
 binary_sensor:
   - platform: gpio
     id: gpio14
@@ -53,8 +57,8 @@ binary_sensor:
         - mqtt.publish:
             topic: ${device_name}/binary_sensor/oben-links/PRESS_SHORT
             payload: "PRESS_SHORT"
-    
-    
+
+
   - platform: gpio
     id: gpio12
     name: "unten-rechts"
@@ -76,7 +80,7 @@ binary_sensor:
         - mqtt.publish:
             topic: ${device_name}/binary_sensor/unten-rechts/PRESS_SHORT
             payload: "PRESS_SHORT"
-    
+
   - platform: gpio
     id: gpio13
     name: "oben-rechts"

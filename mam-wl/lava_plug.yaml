@@ -34,3 +34,8 @@ switch:
   - platform: gpio
     name: "relay"
     pin: GPIO12
+    
+    
+sensor:
+  - platform: uptime
+    name: uptime

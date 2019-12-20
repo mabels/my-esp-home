@@ -40,21 +40,25 @@ light:
 output:
   - platform: esp8266_pwm
     id: output_red
-    pin: D2
+    pin: GPIO13
     
   - platform: esp8266_pwm
     id: output_green
-    pin: D4
+    pin: GPIO05
 
   - platform: esp8266_pwm
     id: output_blue
-    pin: D1
+    pin: GPIO14
 
     
   - platform: esp8266_pwm
     id: output_cw
-    pin: D8
+    pin: GPIO16
   - platform: esp8266_pwm
     id: output_ww
-    pin: D7
+    pin: GPIO12
 
+    
+sensor:
+  - platform: uptime
+    name: uptime

@@ -1,0 +1,85 @@
+substitutions:
+  plug_name: ping32
+  wifi_ssid: !secret wifi_ssid
+  wifi_password: !secret wifi_password
+  
+esphome:
+  name: ${plug_name}
+  platform: ESP32
+  board: nodemcu-32s
+
+wifi:
+  ssid: ${wifi_ssid}
+  password: ${wifi_password}
+  reboot_timeout: 3600s
+
+# Enable logging
+logger:
+#   baud_rate: 0
+
+# Enable Home Assistant API
+#api:
+
+ota:
+
+mqtt:
+  broker: 192.168.202.4
+#  port: 1883
+
+light:
+ - platform: fastled_clockless
+   chipset: SK6812
+   pin: GPIO19
+   num_leds: 22
+   rgb_order: GRB
+   name: "schrank-r"
+# light:
+#   - platform: neopixelbus
+#     default_transition_length: 1s
+#     type: GRBW
+#     pin: GPIO19
+#     variant: SK6812
+#     method: ESP32_RMT_0
+#     num_leds: 22
+#     name: "schrank-r"
+#     id: "schrank_r"
+    # ...
+    #effects:
+    #  - addressable_fireworks:
+    #  - addressable_rainbow:
+      
+#   - platform: neopixelbus
+#     default_transition_length: 1s
+#     type: GRBW
+#     pin: GPIO18
+#     variant: SK6812
+#     method: ESP32_RMT_1
+#     num_leds: 22
+#     name: "schrank-l"
+#     id: "schrank_l"
+#     # ...
+#     #effects:
+#     #  - addressable_fireworks:
+#     #  - addressable_rainbow:
+
+  # - platform: monochromatic
+  #   output: schrank_led
+  #   name: "schrank-led"
+
+# output:
+#   - platform: ledc
+#     pin: GPIO5
+#     frequency: 1000 Hz
+#     id: schrank_led
+
+
+# switch:
+#   - platform: gpio
+#     pin: GPIO2
+#     restore_mode: ALWAYS_OFF
+#     id: "LED"
+#     name: "LED"
+    
+sensor:
+  - platform: uptime
+    name: uptime

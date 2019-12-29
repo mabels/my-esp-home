@@ -40,23 +40,23 @@ light:
 output:
   - platform: esp8266_pwm
     id: output_red
-    pin: GPIO13
+    pin: D8
     
   - platform: esp8266_pwm
     id: output_green
-    pin: GPIO05
+    pin: D7
 
   - platform: esp8266_pwm
     id: output_blue
-    pin: GPIO14
+    pin: D6
 
     
   - platform: esp8266_pwm
     id: output_cw
-    pin: GPIO16
+    pin: D1
   - platform: esp8266_pwm
     id: output_ww
-    pin: GPIO12
+    pin: D5
 
     
 sensor:

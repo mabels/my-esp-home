@@ -1,0 +1,90 @@
+substitutions:
+  wifi_ssid: !secret wifi_ssid
+  wifi_password: !secret wifi_password
+
+esphome:
+  name: flur_colo
+  platform: ESP32
+#  board: nodemcu-32s 
+  board: esp-wrover-kit
+
+wifi:
+  ssid: ${wifi_ssid}
+  password: ${wifi_password}
+  reboot_timeout: 3600s
+
+# Enable logging
+logger:
+
+ota:
+
+mqtt:
+  broker: 192.168.202.4
+  port: 1883
+ 
+light:
+  - platform: neopixelbus
+    type: GRB
+    pin: GPIO16
+    num_leds: 114
+    name: "PIN2"
+    effects:
+    - addressable_rainbow:
+    - addressable_rainbow:
+        name: Rainbow Effect With Custom Values
+        speed: 10
+        width: 114
+  
+binary_sensor:
+  - platform: gpio
+    pin: GPIO13
+    name: "GPIO13"
+
+# sensor:
+#   - platform: adc
+#     pin: GPIO12
+#     name: "Sound level"
+#     update_interval: 1s
+#     accuracy_decimals: 6
+#    filters:
+#  - multiply: 100
+#  - platform: neopixelbus
+#    type: GRB
+#    pin: GPIO2
+#    num_leds: 4
+#    name: "PIN2"
+#  - platform: neopixelbus
+#    type: GRB
+#    pin: GPIO3
+#    num_leds: 4
+#    name: "PIN3"
+#  - platform: neopixelbus
+#    type: GRB
+#    pin: GPIO4
+#    num_leds: 4
+#    name: "PIN4"
+#  - platform: neopixelbus
+#    type: GRB
+#    pin: GPIO12
+#    num_leds: 4
+#    name: "PIN12"
+#  - platform: neopixelbus
+#    type: GRB
+#    pin: GPIO13
+#    num_leds: 4
+#    name: "PIN13"
+#  - platform: neopixelbus
+#    type: GRB
+#    pin: GPIO14
+#    num_leds: 4
+#    name: "PIN14"
+#  - platform: neopixelbus
+#    type: GRB
+#    pin: GPIO15
+#    num_leds: 4
+#    name: "PIN15"
+#  - platform: neopixelbus
+#    type: GRB
+#    pin: GPIO16
+#    num_leds: 4
+#    name: "PIN16"

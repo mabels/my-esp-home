@@ -1,0 +1,80 @@
+substitutions:
+  plug_name: irda_trans
+  wifi_ssid: !secret wifi_ssid
+  wifi_password: !secret wifi_password
+  
+esphome:
+  name: ${plug_name}
+  platform: ESP8266
+  board: d1_mini
+
+wifi:
+  ssid: ${wifi_ssid}
+  password: ${wifi_password}
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+#api:
+
+ota:
+
+mqtt:
+  broker: 192.168.202.4
+#  port: 1883
+
+remote_transmitter:
+  pin: D2
+  carrier_duty_percent: 50%
+  
+switch:
+  - platform: template
+    name: "Oben"
+    turn_on_action:  
+      remote_transmitter.transmit_raw:
+        # code: [550, -565, 547, -593, 520, -593, 520, -592, 548, -592, 520, -592, 522, -590, 549, -591, 1662, -588, 1666, -586, 1637, -616, 1637, -617, 1635, -616]
+        code: [8850, -4068, 503, -531, 479, -554, 480, -554, 480, -553, 481, -553, 480, -554, 1008, -1107, 1009, -1104, 480]
+
+  - platform: template
+    name: "Links"
+    turn_on_action:  
+      remote_transmitter.transmit_raw:
+        code: [8899, -4018, 531, -503, 530, -503, 529, -504, 530, -505, 1057, -1057, 531, -503, 1060, -1055, 530, -502, 531]
+       
+  - platform: template
+    name: "Rechts"
+    turn_on_action:  
+      remote_transmitter.transmit_raw:
+        code: [8931, -3988, 561, -473, 560, -473, 561, -472, 560, -474, 1061, -1054, 560, -473, 1087, -1028, 1090, -1023, 561]
+       
+  - platform: template
+    name: "Unten"
+    turn_on_action:  
+      remote_transmitter.transmit_raw:
+        code: [8849, -4069, 529, -504, 503, -530, 480, -554, 480, -553, 1058, -1057, 504, -530, 503, -531, 1008, -1106, 479]
+       
+  - platform: template
+    name: "U1"
+    turn_on_action:  
+      remote_transmitter.transmit_raw:
+        code: [8902, -4016, 533, -501, 557, -476, 558, -475, 557, -477, 1059, -1056, 1061, -1054, 1060, -1055, 532, -499, 532]
+       
+  - platform: template
+    name: "U2"
+    turn_on_action:  
+      remote_transmitter.transmit_raw:
+        code: [8906, -4008, 535, -499, 535, -498, 535, -499, 535, -498, 1063, -1052, 1063, -1051, 535, -498, 535, -497, 535]
+       
+  
+        
+# ObenMitte [17:56:33][D][remote.raw:041]: Received Raw: 8850, -4068, 503, -531, 479, -554, 480, -554, 480, -553, 481, -553, 480, -554, 1008, -1107, 1009, -1104, 480
+# ObenLinks [17:56:35][D][remote.raw:041]: Received Raw: 8899, -4018, 531, -503, 530, -503, 529, -504, 530, -505, 1057, -1057, 531, -503, 1060, -1055, 530, -502, 531
+# ObenRechts [17:56:36][D][remote.raw:041]: Received Raw: 8931, -3988, 561, -473, 560, -473, 561, -472, 560, -474, 1061, -1054, 560, -473, 1087, -1028, 1090, -1023, 561
+# UntenMitte [17:56:38][D][remote.raw:041]: Received Raw: 8849, -4069, 529, -504, 503, -530, 480, -554, 480, -553, 1058, -1057, 504, -530, 503, -531, 1008, -1106, 479
+# Unten1 [17:56:39][D][remote.raw:041]: Received Raw: 8902, -4016, 533, -501, 557, -476, 558, -475, 557, -477, 1059, -1056, 1061, -1054, 1060, -1055, 532, -499, 532
+# Unten2 [17:56:40][D][remote.raw:041]: Received Raw: 8906, -4008, 535, -499, 535, -498, 535, -499, 535, -498, 1063, -1052, 1063, -1051, 535, -498, 535, -497, 535
+
+sensor:
+  - platform: uptime
+    name: uptime

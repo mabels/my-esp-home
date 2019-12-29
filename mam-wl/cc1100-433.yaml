@@ -6,11 +6,11 @@ esphome:
   name: cc1100_433
   platform: ESP8266
   board: d1_mini
-  #includes:
-  #  - lora_sender.h
-  #libraries:
+  includes:
+    - cc1100.h
+  libraries:
   #  - "LoRa"
-  #  - "SPI"
+    - "SPI"
 
 wifi:
   ssid: ${wifi_ssid}
@@ -21,7 +21,7 @@ wifi:
 logger:
 
 # Enable Home Assistant API
-#api:
+api:
 
 ota:
 
@@ -52,13 +52,17 @@ spi:
   #  id: my_font
   #  size: 20
 
-  #text_sensor:
-  #- platform: custom
-  #  lambda: |-
-  #      auto my_custom = new LoRaComponent();
-  #      return {my_custom};
-  #text_sensors:
-  
+text_sensor:
+  - platform: custom
+    lambda: |-
+        auto my_custom = new CC1100Component();
+        App.register_component(my_custom);
+        return {my_custom};
+    #sensors:
+    #  name: "CC1100Component
+      
+    text_sensors:
+
   #- platform: mqtt_subscribe
   #  name: "lora_recv"
   #  id: lora_recv

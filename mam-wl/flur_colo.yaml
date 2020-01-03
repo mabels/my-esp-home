@@ -5,8 +5,8 @@ substitutions:
 esphome:
   name: flur_colo
   platform: ESP32
-#  board: nodemcu-32s 
-  board: esp-wrover-kit
+  board: nodemcu-32s 
+  # board: esp-wrover-kit
 
 wifi:
   ssid: ${wifi_ssid}
@@ -20,26 +20,184 @@ ota:
 
 mqtt:
   broker: 192.168.202.4
-  port: 1883
  
-light:
-  - platform: neopixelbus
-    type: GRB
+switch:
+  - platform: template
+    name: tile1
+    id: tile1
+    on_turn_on:
+      - light.addressable_set:
+        id: leds
+        range_from: 0
+        range_to: 19
+        red: 100%
+        green: 0%
+        blue: 0%
+      
+light:     
+  - platform: partition
+    name: "tiles"
+    segments:
+      - id: leds
+        from: 0
+        to: 19
+      - id: leds
+        from: 20
+        to: 38
+      - id: leds
+        from: 39
+        to: 57
+      - id: leds
+        from: 58
+        to: 76
+      - id: leds
+        from: 77
+        to: 95
+      - id: leds
+        from: 96
+        to: 113
+        
+  # - platform: neopixelbus
+  #   type: GRB
+  #   pin: GPIO16
+  #   variant: WS2813
+  #   method: BIT_BANG
+
+  # - platform: fastled_clockless
+  #   chipset: WS2813
+  #   pin: GPIO16
+  #   num_leds: 19
+  #   name: "tile1"
+  #   id: "tile1"
+    
+  # - platform: fastled_clockless
+  #   chipset: WS2813
+  #   pin: GPIO16
+  #   num_leds: 19
+  #   name: "tile2"
+  #   id: "tile2"
+    
+  # - platform: fastled_clockless
+  #   chipset: WS2813
+  #   pin: GPIO16
+  #   num_leds: 19
+  #   name: "tile3"
+  #   id: "tile3"
+ 
+  # - platform: fastled_clockless
+  #   chipset: WS2813
+  #   pin: GPIO16
+  #   num_leds: 19
+  #   name: "tile4"
+  #   id: "tile4"
+    
+  # - platform: fastled_clockless
+  #   chipset: WS2813
+  #   pin: GPIO16
+  #   num_leds: 19
+  #   name: "tile5"
+  #   id: "tile5"
+    
+  # - platform: fastled_clockless
+  #   chipset: WS2813
+  #   pin: GPIO16
+  #   num_leds: 19
+  #   name: "tile6"
+  #   id: "tile6"
+ 
+  - platform: fastled_clockless
+    chipset: WS2812
     pin: GPIO16
-    num_leds: 114
-    name: "PIN2"
+    # max_refresh_rate: 33ms
+    
+    num_leds: 132
+    name: "leds"
+    id: "leds"
     effects:
-    - addressable_rainbow:
-    - addressable_rainbow:
-        name: Rainbow Effect With Custom Values
-        speed: 10
-        width: 114
+    - addressable_color_wipe:
+        name: wipe
+        colors:
+        - red: 100%
+          green: 0%
+          blue: 0%
+          white: 0%
+          num_leds: 2
+        - red: 100%
+          green: 50%
+          blue: 0%
+          white: 0%
+          num_leds: 2
+        - red: 100%
+          green: 100%
+          blue: 0%
+          white: 0%
+          num_leds: 2
+        - red: 0%
+          green: 100%
+          blue: 0%
+          white: 0%
+          num_leds: 2
+        - red: 9%
+          green: 58%
+          blue: 100%
+          white: 0%
+          num_leds: 2
+        - red: 41%
+          green: 2%
+          blue: 100%
+          white: 0%
+          num_leds: 2
+        - red: 61%
+          green: 0%
+          blue: 100%
+          white: 0%
+          num_leds: 2              
+        add_led_interval: 100ms
+        reverse: false
+    
+    - lambda:
+          name: rgbtest
+          update_interval: 1s
+          lambda: |-
+            static int state = 0;
+            auto call = id(leds).turn_on();
+            // it[state] = ESPColor(100, 0, 100);
+            call.set_transition_length(25);
+            call.set_flash_length(1);
+            call.set_rgb(state/(6.0 * 19.0), 0.0, 1.0);
+            // id(leds).current_values[state] = ESPColor(100, 0, 100);
+            // leds[state] = ESPColor(100, 0, 100);
+            /*
+            # auto call = id(leds).turn_on();
+            # // Transtion of 1000ms = 1s
+            # call.set_transition_length(1000);
+            # if (state == 0) {
+            #   call.set_rgb(1.0, 1.0, 1.0);
+            # } else if (state == 1) {
+            #   call.set_rgb(1.0, 0.0, 1.0);
+            # } else if (state == 2) {
+            #   call.set_rgb(0.0, 0.0, 1.0);
+            # } else {
+            #   call.set_rgb(1.0, 0.0, 0.0);
+            # }
+            */
+            call.perform();
+            state += 1;
+            if (state == 6 * 19)
+              state = 0;
+    # - addressable_rainbow:
+    # - addressable_rainbow:
+    #     name: Rainbow Effect With Custom Values
+    #     speed: 10
+    #     width: 114
   
 binary_sensor:
   - platform: gpio
     pin: GPIO13
     name: "GPIO13"
 
+
+      
 # sensor:
 #   - platform: adc
 #     pin: GPIO12

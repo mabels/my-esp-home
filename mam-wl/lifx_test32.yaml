@@ -1,12 +1,14 @@
 substitutions:
-  plug_name: lifx_test
+  plug_name: lifx_test32
   wifi_ssid: !secret wifi_ssid
   wifi_password: !secret wifi_password
   
 esphome:
   name: ${plug_name}
-  platform: ESP8266
-  board: d1_mini
+  platform: ESP32
+  board: nodemcu-32s
+  #platform: ESP8266
+  #board: d1_mini
   
   includes:
     - lifx-light.h

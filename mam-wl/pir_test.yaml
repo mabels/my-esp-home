@@ -1,0 +1,34 @@
+substitutions:
+  plug_name: pir_test
+  wifi_ssid: !secret wifi_ssid
+  wifi_password: !secret wifi_password
+  
+esphome:
+  name: ${plug_name}
+  platform: ESP8266
+  board: nodemcuv2
+
+wifi:
+  ssid: ${wifi_ssid}
+  password: ${wifi_password}
+  reboot_timeout: 3600s
+
+# Enable logging
+logger:
+  baud_rate: 0
+
+# Enable Home Assistant API
+#api:
+
+ota:
+
+mqtt:
+  broker: 192.168.202.4
+#  port: 1883
+
+binary_sensor:
+  - platform: gpio
+    pin: GPIO5
+    name: "PIRSensor"
+    device_class: motion
+

@@ -1,0 +1,165 @@
+substitutions:
+  wifi_ssid: !secret wifi_ssid
+  wifi_password: !secret wifi_password
+
+esphome:
+  name: rollo
+  platform: ESP8266
+  board: esp01_1m
+  includes:
+    - rollo.h
+
+wifi:
+  ssid: ${wifi_ssid}
+  password: ${wifi_password}
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  #  ap:
+  #  ssid: "Tini Fallback Hotspot"
+  #  password: "5FeZ03Jxrwhl"
+
+  #captive_portal:
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+#api:
+
+ota:
+
+mqtt:
+  broker: 192.168.202.4
+#   on_message:
+#     - topic: rollo/action
+#       then:
+#         lambda: !lambda |-
+# #       global_mqtt_client->subscribe("rollo/control", [=](const std::string &payload) {
+# #           // do something with payload
+# #           return payload;
+# #       }); 
+#           return {"Bumps"};
+#  port: 1883
+
+  
+i2c:
+  sda: GPIO12
+  scl: GPIO14
+
+custom_component:
+  - lambda: |-
+      auto my_rollo = new Rollo();
+      my_rollo->set_name("wuhu");
+      my_rollo->set_open_switch(id(up_relay));
+      my_rollo->set_close_switch(id(down_relay));
+      App.register_component(my_rollo);
+      return {my_rollo};
+  
+# binary_sensor:
+#   - platform: gpio
+#     pin:
+#       number: GPIO13
+#     name: "Washing Machine Switch"
+#     id: washing_switch_id
+#     on_press:
+#       then:
+#         - switch.toggle: washing_machine_relay
+#   - platform: gpio
+#     pin:
+#       number: GPIO5
+#     name: "Dryer Switch"
+#     id: dryer_switch_id
+#     on_press:
+#       then:
+#         - switch.toggle: dryer_relay
+
+sensor:
+  - platform: ntc
+    sensor: laundry_resistance_sensor
+    id: laundry_temperature
+    name: "Laundry Temperature"
+    unit_of_measurement: "°C"
+    accuracy_decimals: 1
+    icon: mdi:thermometer
+    calibration:
+      b_constant: 3350
+      reference_temperature: 25°C
+      reference_resistance: 10kOhm
+  - platform: adc
+    id: laundry_source_sensor
+    pin: A0
+    update_interval: 10s
+  - platform: resistance
+    id: laundry_resistance_sensor
+    sensor: laundry_source_sensor
+    configuration: DOWNSTREAM
+    resistor: 32kOhm
+  - platform: ade7953
+    voltage:
+      name: "Laundry Voltage"
+    current_a: 
+      name: "ADE7953 Current 1"
+    current_b:
+      name: "ADE7953 Current 2"
+    active_power_a:
+      name: "ADE7953 Power 1"
+    active_power_b:
+      name: "ADE7953 Power 2"
+      filters:
+      - multiply: -1.0
+      
+  - platform: uptime
+    name: uptime
+
+status_led:
+  pin:
+    number: GPIO0
+    inverted: yes
+
+# cover:
+#   - platform: endstop
+#     name: "My Endstop Cover"
+#     id: my_cover
+#     open_action:
+#       - switch.turn_on: washing_machine_relay
+#     open_duration: 30sec
+#     open_endstop: washing_switch_id
+
+#     close_action:
+#       - switch.turn_on: dryer_relay
+#     close_duration: 30sec
+#     close_endstop: dryer_switch_id
+#     stop_action:
+#       - switch.turn_off: washing_machine_relay
+#       - switch.turn_off: dryer_relay
+#     max_duration: 3min
+
+switch:
+  - platform: gpio
+    id: up_relay
+    name: "up_relay"
+    pin: GPIO15
+    restore_mode: ALWAYS_OFF
+    
+  - platform: gpio
+    id: down_relay
+    name: "down_relay"
+    pin: GPIO4
+    restore_mode: ALWAYS_OFF 
+  
+
+
+#   # in some trigger
+#   on_subscribe:
+#     - text_sensor.template.publish:
+#         id: template_text
+#         state: "Hello World"
+  
+#     # Templated
+#     - text_sensor.template.publish:
+#         id: template_text
+#         state: !lambda 'return "Hello World";'
+
+    
+  
+ 

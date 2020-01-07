@@ -9,6 +9,7 @@ esphome:
   board: d1_mini
   
   includes:
+    - udp-context.h
     - lifx-light.h
 
 wifi:

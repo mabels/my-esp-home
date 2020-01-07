@@ -85,7 +85,11 @@ class Rollo : public MQTTComponent, public Nameable {
         }
         auto oaction = state["action"];
         if (oaction.success()) {
-          action = oaction.as<const char *>();
+          if (driveActualTime.has_value()) {
+            action = "STOP";
+          } else {
+            action = oaction.as<const char *>();
+          }
           if (action == "UP") {
             driveActualTime = driveTime; 
           } else if (action == "DOWN") {

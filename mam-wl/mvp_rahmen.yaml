@@ -18,7 +18,7 @@ wifi:
 
 # Enable logging
 logger:
-  baud_rate: 0
+#  baud_rate: 0
 
 # Enable Home Assistant API
 #api:
@@ -84,3 +84,7 @@ sensor:
 
   - platform: uptime
     name: uptime
+
+  - platform: wifi_signal
+    name: Wi-Fi_Signal
+    update_interval: 60s

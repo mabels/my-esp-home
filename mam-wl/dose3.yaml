@@ -123,3 +123,7 @@ sensor:
 text_sensor:
   - platform: version
     name: firmware_version
+
+  - platform: wifi_signal
+    name: Wi-Fi_Signal
+    update_interval: 60s

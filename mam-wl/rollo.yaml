@@ -75,9 +75,9 @@ custom_component:
 
 sensor:
   - platform: ntc
-    sensor: laundry_resistance_sensor
-    id: laundry_temperature
-    name: "Laundry Temperature"
+    sensor: resistance_sensor
+    id: temperature
+    name: "Temperature"
     unit_of_measurement: "°C"
     accuracy_decimals: 1
     icon: mdi:thermometer
@@ -86,12 +86,12 @@ sensor:
       reference_temperature: 25°C
       reference_resistance: 10kOhm
   - platform: adc
-    id: laundry_source_sensor
+    id: source_sensor
     pin: A0
     update_interval: 10s
   - platform: resistance
-    id: laundry_resistance_sensor
-    sensor: laundry_source_sensor
+    id: resistance_sensor
+    sensor: source_sensor
     configuration: DOWNSTREAM
     resistor: 32kOhm
   - platform: ade7953
@@ -110,6 +110,10 @@ sensor:
       
   - platform: uptime
     name: uptime
+
+  - platform: wifi_signal
+    name: Wi-Fi_Signal
+    update_interval: 60s
 
 status_led:
   pin:

@@ -83,3 +83,6 @@ light:
 sensor:
   - platform: uptime
     name: uptime
+  - platform: wifi_signal
+    name: Wi-Fi_Signal
+    update_interval: 60s

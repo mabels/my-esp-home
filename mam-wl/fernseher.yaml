@@ -44,8 +44,15 @@ light:
     effects:
       - addressable_fireworks:
       - addressable_rainbow:
+      - addressable_color_wipe:
+      - addressable_scan
+      - addressable_twinkle
       
     
 sensor:
   - platform: uptime
     name: uptime
+
+  - platform: wifi_signal
+    name: Wi-Fi_Signal
+    update_interval: 60s

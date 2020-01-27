@@ -1,0 +1,75 @@
+substitutions:
+  plug_name: schrank_test
+  wifi_ssid: !secret wifi_ssid
+  wifi_password: !secret wifi_password
+  
+esphome:
+  name: ${plug_name}
+  platform: ESP8266
+  board: d1_mini
+
+wifi:
+  ssid: ${wifi_ssid}
+  password: ${wifi_password}
+  reboot_timeout: 3600s
+
+# Enable logging
+logger:
+#  baud_rate: 0
+
+# Enable Home Assistant API
+#api:
+
+ota:
+
+mqtt:
+  broker: 192.168.202.4
+#  port: 1883
+
+light:
+#  - platform: neopixelbus
+#    default_transition_length: 0s
+#    type: GRBW
+#    pin: GPIO1
+#    variant: SK6812
+#    method: ESP8266_UART0
+#    num_leds: 3
+#    name: "schrank-r"
+#    id: "schrank_r"
+#    # ...
+#    effects:
+#      - addressable_fireworks:
+#      - addressable_rainbow:
+#      
+#  - platform: neopixelbus
+#    default_transition_length: 0s
+#    type: GRBW
+#    pin: GPIO2
+#    variant: SK6812
+#    method: ESP8266_UART1
+#    num_leds: 3
+#    name: "schrank-l"
+#    id: "schrank_l"
+#    # ...
+#    effects:
+#      - addressable_fireworks:
+#      - addressable_rainbow:
+#
+#  - platform: monochromatic
+#    output: schrank_led
+#    name: "schrank-led"
+
+output:
+  - platform: esp8266_pwm
+    pin: D1
+    frequency: 1000 Hz
+    id: schrank_led
+    
+        
+sensor:
+  - platform: uptime
+    name: uptime
+
+  - platform: wifi_signal
+    name: Wi-Fi_Signal
+    update_interval: 60s

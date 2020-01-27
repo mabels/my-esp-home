@@ -1,0 +1,134 @@
+substitutions:
+  plug_name: mvp_rahmen32
+  mqtt_server: mqtt.local
+  wifi_ssid: !secret wifi_ssid
+  wifi_password: !secret wifi_password
+  
+esphome:
+  name: ${plug_name}
+  platform: ESP32
+  # board: nodemcu-32s
+  board: esp32doit-devkit-v1
+
+wifi:
+  ssid: ${wifi_ssid}
+  password: ${wifi_password}
+  reboot_timeout: 3600s
+
+# Enable logging
+logger:
+#   baud_rate: 0
+
+# Enable Home Assistant API
+#api:
+
+ota:
+
+mqtt:
+  broker: ${mqtt_server}
+#  port: 1883
+
+light:
+  - platform: neopixelbus
+    type: GRBW
+    variant: SK6812
+    pin: GPIO25
+    num_leds: 52
+    #rgb_order: GRB
+    name: "leds"
+    effects:
+      - addressable_fireworks:
+      - addressable_rainbow:
+      - addressable_rainbow:
+          name: Rainbow Effect With Custom Values
+          speed: 200
+          width: 30
+      - addressable_color_wipe:
+      - addressable_scan
+      - addressable_twinkle
+      - addressable_lambda:
+          name: "jojo"
+          update_interval: 16ms
+          lambda: |-
+            // it.size() - Number of LEDs
+            // it[num] - Access the LED at index num.
+            // Set the LED at num to the given r, g, b values
+            // it[num] = ESPColor(r, g, b);
+            // Get the color at index num (ESPColor instance)
+            // it[num].get();
+  
+            // Example: Simple color wipe
+            for (int i = it.size() - 1; i > 0; i--) {
+              it[i] = it[i - 1].get();
+            }
+            it[0] = ESPColor::random_color();
+  
+            // Bonus: use .range() and .all() to set many LEDs without having to write a loop.
+            it.range(0, 50) = ESPColor::BLACK;
+            it.all().fade_to_black(10);
+          
+
+
+   
+  # - platform: neopixelbus
+  #   default_transition_length: 1s
+  #   type: GRBW
+  #   pin: GPIO19
+  #   variant: SK6812
+  #   method: ESP32_RMT_0
+  #   num_leds: 22
+  #   name: "schrank-r"
+  #   id: "schrank_r"
+    # ...
+    #effects:
+    #  - addressable_fireworks:
+    #  - addressable_rainbow:
+  # - platform: fastled_clockless
+  #   chipset: SK6812
+  #   pin: GPIO18
+  #   num_leds: 22
+  #   rgb_order: GRB
+  #   name: "schrank-l"
+   
+  # - platform: neopixelbus
+  #   default_transition_length: 1s
+  #   type: GRBW
+  #   pin: GPIO18
+  #   variant: SK6812
+  #   method: ESP32_RMT_1
+  #   num_leds: 22
+  #   name: "schrank-l"
+  #   id: "schrank_l"
+    # ...
+    #effects:
+    #  - addressable_fireworks:
+    #  - addressable_rainbow:
+
+  # - platform: monochromatic
+  #   output: schrank_led
+  #   name: "schrank-led"
+
+# output:
+#   - platform: ledc
+#     pin: GPIO5
+#     # frequency: 1000 Hz
+#     id: schrank_led
+
+
+# switch:
+#   - platform: gpio
+#     pin: GPIO2
+#     restore_mode: ALWAYS_OFF
+#     id: "LED"
+#     name: "LED"
+    
+sensor:
+  - platform: uptime
+    name: uptime
+  - platform: wifi_signal
+    name: Wi-Fi_Signal
+    update_interval: 60s
+    
+text_sensor:
+  - platform: version
+    name: "ESPHomeVersion"

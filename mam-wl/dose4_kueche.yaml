@@ -2,6 +2,7 @@ substitutions:
   plug_name: dose4_kueche
   wifi_ssid: !secret wifi_ssid
   wifi_password: !secret wifi_password
+  mqtt: !secret mqtt
   current_res: "0.00221"
   voltage_div: "955"
   
@@ -31,7 +32,7 @@ logger:
 ota:
 
 mqtt:
-  broker: 192.168.202.4
+  broker: ${mqtt}
 #  port: 1883
   
 time:

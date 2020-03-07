@@ -1,7 +1,7 @@
 substitutions:
-  mqtt_server: 192.168.202.4
   wifi_ssid: !secret wifi_ssid
   wifi_password: !secret wifi_password
+  mqtt: !secret mqtt
 
 esphome:
   name: kabuff_led
@@ -21,7 +21,7 @@ logger:
 ota:
 
 mqtt:
-  broker: ${mqtt_server}
+  broker: ${mqtt}
 #  port: 1883
   
 switch:

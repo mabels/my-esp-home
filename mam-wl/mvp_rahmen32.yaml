@@ -35,6 +35,7 @@ light:
     pin: GPIO25
     num_leds: 52
     #rgb_order: GRB
+    id: leds
     name: "leds"
     effects:
       - addressable_fireworks:
@@ -46,26 +47,54 @@ light:
       - addressable_color_wipe:
       - addressable_scan
       - addressable_twinkle
-      - addressable_lambda:
-          name: "jojo"
-          update_interval: 16ms
+      - lambda:
+          name: updown
+          update_interval: 500ms
           lambda: |-
-            // it.size() - Number of LEDs
-            // it[num] - Access the LED at index num.
-            // Set the LED at num to the given r, g, b values
-            // it[num] = ESPColor(r, g, b);
-            // Get the color at index num (ESPColor instance)
-            // it[num].get();
-  
-            // Example: Simple color wipe
-            for (int i = it.size() - 1; i > 0; i--) {
-              it[i] = it[i - 1].get();
+            static int state = 0;
+            static float bri = 0.3;
+            auto call = id(leds).turn_on();
+            // Transtion of 1000ms = 1s
+            call.set_transition_length(500);
+            call.set_rgb(1.0, 1.0, 1.0);
+            if (state == 0) {
+              bri = 0.3;
             }
-            it[0] = ESPColor::random_color();
+            if (state == 7) {
+              bri = 1;
+            }
+            if (state < 7) {
+              call.set_brightness(bri);
+              bri += 0.1;
+            } else{
+              call.set_brightness(bri);
+              bri -= 0.1;
+            }
+            call.perform();
+            state += 1;
+            if (state == 14)
+              state = 0;
+              
+      # - addressable_lambda:
+      #     name: "jojo"
+      #     update_interval: 16ms
+      #     lambda: |-
+      #       // it.size() - Number of LEDs
+      #       // it[num] - Access the LED at index num.
+      #       // Set the LED at num to the given r, g, b values
+      #       // it[num] = ESPColor(r, g, b);
+      #       // Get the color at index num (ESPColor instance)
+      #       // it[num].get();
   
-            // Bonus: use .range() and .all() to set many LEDs without having to write a loop.
-            it.range(0, 50) = ESPColor::BLACK;
-            it.all().fade_to_black(10);
+      #       // Example: Simple color wipe
+      #       for (int i = it.size() - 1; i > 0; i--) {
+      #         it[i] = it[i - 1].get();
+      #       }
+      #       it[0] = ESPColor::random_color();
+  
+      #       // Bonus: use .range() and .all() to set many LEDs without having to write a loop.
+      #       it.range(0, 50) = ESPColor::BLACK;
+      #       it.all().fade_to_black(10);
           
 
 

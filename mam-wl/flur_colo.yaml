@@ -26,14 +26,14 @@ switch:
   - platform: template
     name: tile1
     id: tile1
-    # on_turn_on:
-    #   - light.addressable_set:
-    #     id: leds
-    #     range_from: 0
-    #     range_to: 19
-    #     red: 100%
-    #     green: 0%
-    #     blue: 0%
+    #on_turn_on:
+    #  - light.addressable_set:
+    #    id: leds
+    #    range_from: 0
+    #    range_to: 19
+    #    red: 100%
+    #    green: 0%
+    #    blue: 0%
       
 light:     
   - platform: partition

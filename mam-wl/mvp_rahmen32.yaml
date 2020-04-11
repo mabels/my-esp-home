@@ -47,33 +47,33 @@ light:
       - addressable_color_wipe:
       - addressable_scan
       - addressable_twinkle
-      - lambda:
-          name: updown
-          update_interval: 500ms
-          lambda: |-
-            static int state = 0;
-            static float bri = 0.3;
-            auto call = id(leds).turn_on();
-            // Transtion of 1000ms = 1s
-            call.set_transition_length(500);
-            call.set_rgb(1.0, 1.0, 1.0);
-            if (state == 0) {
-              bri = 0.3;
-            }
-            if (state == 7) {
-              bri = 1;
-            }
-            if (state < 7) {
-              call.set_brightness(bri);
-              bri += 0.1;
-            } else{
-              call.set_brightness(bri);
-              bri -= 0.1;
-            }
-            call.perform();
-            state += 1;
-            if (state == 14)
-              state = 0;
+      # - lambda:
+      #     name: updown
+      #     update_interval: 500ms
+      #     lambda: |-
+      #       static int state = 0;
+      #       static float bri = 0.3;
+      #       auto call = id(leds).turn_on();
+      #       // Transtion of 1000ms = 1s
+      #       call.set_transition_length(500);
+      #       call.set_rgb(1.0, 1.0, 1.0);
+      #       if (state == 0) {
+      #         bri = 0.3;
+      #       }
+      #       if (state == 7) {
+      #         bri = 1;
+      #       }
+      #       if (state < 7) {
+      #         call.set_brightness(bri);
+      #         bri += 0.1;
+      #       } else{
+      #         call.set_brightness(bri);
+      #         bri -= 0.1;
+      #       }
+      #       call.perform();
+      #       state += 1;
+      #       if (state == 14)
+      #         state = 0;
               
       # - addressable_lambda:
       #     name: "jojo"

@@ -4,7 +4,7 @@ substitutions:
   mqtt: !secret mqtt
 
 esphome:
-  name: rollo
+  name: rollo_7
   platform: ESP8266
   board: esp01_1m
   includes:
@@ -143,13 +143,13 @@ switch:
   - platform: gpio
     id: up_relay
     name: "up_relay"
-    pin: GPIO15
+    pin: GPIO4
     restore_mode: ALWAYS_OFF
     
   - platform: gpio
     id: down_relay
     name: "down_relay"
-    pin: GPIO4
+    pin: GPIO15
     restore_mode: ALWAYS_OFF 
   
 

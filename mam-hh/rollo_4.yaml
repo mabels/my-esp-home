@@ -4,7 +4,7 @@ substitutions:
   mqtt: !secret mqtt
 
 esphome:
-  name: rollo
+  name: rollo_4
   platform: ESP8266
   board: esp01_1m
   includes:

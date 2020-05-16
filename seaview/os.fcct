@@ -5,3 +5,311 @@ passwd:
     - name: core
       ssh_authorized_keys:
         - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDIQpC2scaVXEaNuwtq4n6Vtht2WHYxtDFKe44JNFEsZGyQjyL9c2qkmQQGCF+2g3HrIPDTCCCWQ3GUiXGAlQ0/rf6sLqcm4YMXt+hgHU5VeciUIDEySCKdCPC419wFPBw6oKdcN1pLoIdWoF4LRDcjcrKKAlkdNJ/oLnl716piLdchABO9NXGxBpkLsJGK8qw390O1ZqZMe9wEAL9l/A1/49v8LfzELp0/fhSmiXphTVI/zNVIp/QIytXzRg74xcYpBjHk1TQZHuz/HYYsWwccnu7vYaTDX0CCoAyEt599f9u+JQ4oW0qyLO0ie7YcmR6nGEW4DMsPcfdqqo2VyYy4ix3U5RI2JcObfP0snYwPtAdVeeeReXi3c/E7bGLeCcwdFeFBfHSA9PDGxWVlxh/oCJaE7kP7eBhXNjN05FodVdNczKI5T9etfQ9VHILFrvpEREg1+OTiI58RmwjxS5ThloqXvr/nZzhIwTsED0KNW8wE4pjyotDJ8jaW2d7oVIMdWqE2M9Z1sLqDDdhHdVMFxk6Hl2XfqeqO2Jnst7qzbHAN/S3hvSwysixWJEcLDVG+cg1KRwz4qafCU5oHSp8aNNOk4RZozboFjac17nOmfPfnjC/LLayjSkEBZ+eFi+njZRLDN92k3PvHYFEB3USbHYzICsuDcf+L4cslX03g7w== openpgp:0x5F1BE34D
+        - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDBrNKjpS9Xrk3iOAtOk+RqOl13oF3fOweZIDf2MXvFitCvf66h0gyUpuyOZn/uxQW1ondF0LYFRMQB3cjVowWQZTc8u/p90QRC0CIog1nVUYTbUfjJgnx3kSk9Q6gcwts9Rbd2MTWVZqLcAHy8FtlrzDb0MSdhh8nAWq5RnULdsKRUf49ueXzLMXo3BoZaQjTXV8TCEJof6ftjk84fBV/ylsVNmQWxN21vlMFQGsKBXCodfmeQnMkELwL/v9rTAp8TfVaQmvt0IuFol0MtBFw/LLq2CFDxzYW8DEVmwnjtrXk3pOg+mL2VxkDM9u4D/CyE15VFMvZI184mIN+iQlFU+ZeBhKn2pMa5cw2b2qrM8LXVGM3hwPQf93i0jSwaNa77ySfKJAtCFE0+rO7jqzQZ7wGrggJmG6YPThEqCSr1smH3Jh9lNNAsK7H3ZHkL+4+cPMk+n8SBJDv4OU0eRBOJ20QS3elcF1q7sxAKYzEIcZvwSceE2Ly8Q6XCEgJti8bncTqmTFpBzL28VtLjIjSlTPKYz4nWP8TrsX07sCzgjrMGoEjul/kTmK5c/gEqXsHkvrcmcHbYu9LMmK6SqD/wxKdBBW541LtGW3ylwiqLXPAk3xA5O9sLko3+vJm2wSsmYjhq04FGPQCGnWi6ROrwGLYw71LqA+3dX20oQjKVIw==
+
+systemd:
+  units:
+    - name: install-k3s.service
+      enabled: true
+      contents: |
+        [Unit]
+        Description=Install K3S
+        [Service]
+        Type=oneshot
+        ExecStart=curl -sfL https://get.k3s.io | INSTALL_K3S_SELINUX_WARN=true sh - && systemctl disable install-k3s
+        [Install]
+        WantedBy=multi-user.target
+
+    - name: install-teleport.service
+      enabled: true
+      contents: |
+        [Unit]
+        Description=Install Teleport
+        [Service]
+        Type=oneshot
+        ExecStart=curl https://get.gravitational.com/teleport-v4.2.9-linux-amd64-bin.tar.gz | (cd /tmp && tar xzf - && cd ./teleport && sh ./install) && systemctl disable install-teleport 
+        [Install]
+        WantedBy=multi-user.target
+
+storage:
+
+
+  files:
+    - path: /seaview/influx.yaml
+      contents:
+        inline: |
+          apiVersion: v1
+          kind: Pod
+          metadata:
+            name: influx-db-pd
+            labels:
+              run: influx-db-pd
+          spec:
+            containers:
+            - image: influxdb:latest
+              name: influx-db-container
+              env:
+              - name: TZ
+                value: "PDT"
+              ports:
+              - containerPort: 8086
+                protocol: TCP
+              volumeMounts:
+              - mountPath: /var/lib/influxdb
+                name: influx-db-vol
+            - image: chronograf:latest
+              name: chronograf-container
+              command: ["chronograf", "--influxdb-url=http://127.0.0.1:8086"]
+              env:
+              - name: TZ
+                value: "Europe/Berlin"
+              - name: BOLT_PATH
+                value: "/var/lib/chronograf/chronograf-v1.db"
+              ports:
+              - containerPort: 8888
+                protocol: TCP
+              volumeMounts:
+              - mountPath: /var/lib/chronograf
+                name: chronograf-vol
+          #  - image: telegraf
+          #    name: telegraf-container
+          #    command: ["telegraf", "--influxdb-url=http://192.168.202.4:8086"]
+          #    env:
+          #    - name: TZ
+          ##      value: "Europe/Berlin"
+          #    #ports:
+          #    #- containerPort: 8888
+          #    #  protocol: TCP
+          #    #volumeMounts:
+          #    #- mountPath: /var/lib/chronograf
+          #    #  name: chronograf-vol
+            volumes:
+            - name: chronograf-vol
+              hostPath:
+                path: /seaview/chronograf
+                type: Directory
+            - name: influx-db-vol
+              hostPath:
+                path: /seaview/influx-db
+                type: Directory
+
+          ---
+          apiVersion: v1
+          kind: Service
+          metadata:
+            name: influx-db-pd
+          spec:
+            type: NodePort
+            ports:
+            - port: 8086
+              name: 8086tcp
+              targetPort: 8086
+              protocol: TCP
+              nodePort: 8086
+            - port: 8888
+              name: 8888tcp
+              targetPort: 8888
+              protocol: TCP
+              nodePort: 8888
+            selector:
+              run: influx-db-pd
+
+    - path: /seaview/zigbee2mqtt.yaml
+      contents:
+        inline: |
+          apiVersion: v1
+          kind: Pod
+          metadata:
+            name: zigbee2mqtt-pd
+            labels:
+              run: zigbee2mqtt-pd
+          spec:
+            hostNetwork: true
+            containers:
+            - image: koenkk/zigbee2mqtt:latest
+              name: zigbee2mqtt-container
+              securityContext:
+                privileged: true
+              env:
+              - name: TZ
+                value: "Europe/Berlin"
+              ports:
+              - containerPort: 8011
+                protocol: TCP
+              volumeMounts:
+              - mountPath: /app/data
+                name: appdata
+              - mountPath: /dev/ttyACM0
+                name: ttyacm0
+            volumes:
+            - name: ttyacm0
+              hostPath:
+                path: /dev/ttyACM0
+                type: CharDevice
+            - name: appdata
+              hostPath:
+                path: /seaview/zigbee2mqtt
+                type: Directory
+          ---
+          apiVersion: v1
+          kind: Service
+          metadata:
+            name: zigbee2mqtt-pd
+          spec:
+            type: NodePort
+            ports:
+            - port: 8011
+              name: 8011tcp
+              targetPort: 8011
+              protocol: TCP
+              nodePort: 8011
+            selector:
+              run: zigbee2mqtt-pd
+
+    - path: /seaview/node-red.yaml
+      contents:
+        inline: |
+          apiVersion: v1
+          kind: Pod
+          metadata:
+            name: node-red-pd
+            labels:
+              run: node-red-pd
+          spec:
+            hostNetwork: true
+            containers:
+            - image: nodered/node-red
+              name: node-red-container
+              env:
+              - name: TZ
+                value: "Europe/Berlin"
+              #ports:
+              #- containerPort: 1880
+              #  protocol: TCP
+              #- containerPort: 2062
+              #  protocol: TCP
+              #- containerPort: 2063
+              #  protocol: TCP
+              volumeMounts:
+              - mountPath: /data
+                name: node-red-data
+            volumes:
+            - name: node-red-data
+              hostPath:
+                path: /seaview/node-red
+                type: Directory
+          #---
+          #apiVersion: v1
+          #kind: Service
+          #metadata:
+          #  name: node-red-pd
+          #spec:
+          #  type: NodePort
+          #  ports:
+          #  - port: 1880
+          #    name: 1880tcp
+          #    targetPort: 1880
+          #    protocol: TCP
+          #    nodePort: 1880
+          #  - port: 2062
+          #    name: 2062tcp
+          #    targetPort: 2062
+          #    protocol: TCP
+          #    nodePort: 2062
+          #  - port: 2063
+          #    name: 2063tcp
+          #    targetPort: 2063
+          #    protocol: TCP
+          #    nodePort: 2063
+          #  selector:
+          #    run: node-red-pd
+
+    - path: /seaview/mosquitto.yaml
+      contents:
+        inline: |
+          apiVersion: v1
+          kind: Pod
+          metadata:
+          name: mosquitto-pd
+          labels:
+            run: mosquitto-pd
+          spec:
+            hostNetwork: true
+            containers:
+            - image: library/eclipse-mosquitto
+              name: mosquitto-container
+              ports:
+              - containerPort: 1883
+                protocol: TCP
+
+    - path: /seaview/zwave.yaml
+      contents:
+        inline: |
+          apiVersion: v1
+          kind: Pod
+          metadata:
+            name: zwave-pd
+            labels:
+              run: zwave-pd
+          spec:
+            containers:
+            - name: zwave
+              image: robertslando/zwave2mqtt:latest
+              securityContext:
+                privileged: true
+              ports:
+              - containerPort: 8091
+                protocol: TCP
+              volumeMounts:
+              - mountPath: /etc/localtime
+                name: localtime
+              - mountPath: /usr/src/app/store
+                name: config
+              - mountPath: /dev/ttyACM0
+                name: ttyacm1
+            volumes:
+            - name: config
+              hostPath:
+                path: /rose/zwave
+                type: Directory
+            - name: localtime
+              hostPath:
+                path: /etc/localtime
+                type: File
+            - name: ttyacm1
+              hostPath:
+                path: /dev/ttyACM2
+                type: CharDevice
+          ---
+          apiVersion: v1
+          kind: Service
+          metadata:
+            name: zwave-pd
+          spec:
+            type: NodePort
+            ports:
+            - port: 8091
+              name: 8091tcp
+              targetPort: 8091
+              protocol: TCP
+              nodePort: 8091
+            selector:
+              run: zwave-p
+
+    - path: /etc/hostname
+      contents:
+        inline: seaview
+
+    - path: /etc/systemd/system/k3s.service.d/k3s.conf
+      mode: 0644
+      contents: 
+        inline: |
+          [Service]
+          ExecStart=
+          ExecStart=/usr/local/bin/k3s server \
+          --disable-selinux \
+          --kube-apiserver-arg service-node-port-range=0-65535 \
+          --no-deploy traefik \
+          --no-deploy metrics-server \
+          --no-deploy servicelb
+

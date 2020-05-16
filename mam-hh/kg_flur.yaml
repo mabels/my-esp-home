@@ -1,0 +1,59 @@
+substitutions:
+  plug_name: kg_flur
+  mqtt: !secret mqtt
+  wifi_ssid: !secret wifi_ssid
+  wifi_password: !secret wifi_password
+
+esphome:
+  name: ${plug_name}
+  platform: ESP8266
+  board: d1_mini
+  #includes:
+  #  - udp-context.h
+  #  - lifx-light.h
+
+wifi:
+  ssid: ${wifi_ssid}
+  password: ${wifi_password}
+  reboot_timeout: 3600s
+
+# Enable logging
+logger:
+#  baud_rate: 0
+
+# Enable Home Assistant API
+#api:
+
+ota:
+
+mqtt:
+  broker: ${mqtt}
+#  port: 1883
+#
+#
+sensor:
+  - platform: uptime
+    name: uptime
+  
+  - platform: wifi_signal
+    name: Wi-Fi_Signal
+    update_interval: 60s
+
+
+output:
+  - platform: esp8266_pwm
+    pin: 13
+    frequency: 1000 Hz
+    id: pwm_ww
+  - platform: esp8266_pwm
+    pin: 15
+    frequency: 1000 Hz
+    id: pwm_cw
+
+light:
+  - platform: cwww
+    name: "led120x15"
+    cold_white: pwm_cw
+    warm_white: pwm_ww
+    cold_white_color_temperature: 6536 K
+    warm_white_color_temperature: 2000 K

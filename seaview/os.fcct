@@ -16,7 +16,7 @@ systemd:
         Description=Install K3S
         [Service]
         Type=oneshot
-        ExecStart=curl -sfL https://get.k3s.io | INSTALL_K3S_SELINUX_WARN=true sh - && systemctl disable install-k3s
+        ExecStart=bash -c "curl -sfL https://get.k3s.io | INSTALL_K3S_SELINUX_WARN=true sh - && systemctl disable install-k3s"
         [Install]
         WantedBy=multi-user.target
 
@@ -27,7 +27,7 @@ systemd:
         Description=Install Teleport
         [Service]
         Type=oneshot
-        ExecStart=curl https://get.gravitational.com/teleport-v4.2.9-linux-amd64-bin.tar.gz | (cd /tmp && tar xzf - && cd ./teleport && sh ./install) && systemctl disable install-teleport 
+        ExecStart=bash -c "curl https://get.gravitational.com/teleport-v4.2.9-linux-amd64-bin.tar.gz | (cd /tmp && tar xzf - && cd ./teleport && sh ./install) && systemctl disable install-teleport" 
         [Install]
         WantedBy=multi-user.target
 
@@ -35,267 +35,267 @@ storage:
 
 
   files:
-#    - path: /seaview/influx.yaml
-#      contents:
-#        inline: |
-#          apiVersion: v1
-#          kind: Pod
-#          metadata:
-#            name: influx-db-pd
-#            labels:
-#              run: influx-db-pd
-#          spec:
-#            containers:
-#            - image: influxdb:latest
-#              name: influx-db-container
-#              env:
-#              - name: TZ
-#                value: "PDT"
-#              ports:
-#              - containerPort: 8086
-#                protocol: TCP
-#              volumeMounts:
-#              - mountPath: /var/lib/influxdb
-#                name: influx-db-vol
-#            - image: chronograf:latest
-#              name: chronograf-container
-#              command: ["chronograf", "--influxdb-url=http://127.0.0.1:8086"]
-#              env:
-#              - name: TZ
-#                value: "Europe/Berlin"
-#              - name: BOLT_PATH
-#                value: "/var/lib/chronograf/chronograf-v1.db"
-#              ports:
-#              - containerPort: 8888
-#                protocol: TCP
-#              volumeMounts:
-#              - mountPath: /var/lib/chronograf
-#                name: chronograf-vol
-#          #  - image: telegraf
-#          #    name: telegraf-container
-#          #    command: ["telegraf", "--influxdb-url=http://192.168.202.4:8086"]
-#          #    env:
-#          #    - name: TZ
-#          ##      value: "Europe/Berlin"
-#          #    #ports:
-#          #    #- containerPort: 8888
-#          #    #  protocol: TCP
-#          #    #volumeMounts:
-#          #    #- mountPath: /var/lib/chronograf
-#          #    #  name: chronograf-vol
-#            volumes:
-#            - name: chronograf-vol
-#              hostPath:
-#                path: /seaview/chronograf
-#                type: Directory
-#            - name: influx-db-vol
-#              hostPath:
-#                path: /seaview/influx-db
-#                type: Directory
-#
-#          ---
-#          apiVersion: v1
-#          kind: Service
-#          metadata:
-#            name: influx-db-pd
-#          spec:
-#            type: NodePort
-#            ports:
-#            - port: 8086
-#              name: 8086tcp
-#              targetPort: 8086
-#              protocol: TCP
-#              nodePort: 8086
-#            - port: 8888
-#              name: 8888tcp
-#              targetPort: 8888
-#              protocol: TCP
-#              nodePort: 8888
-#            selector:
-#              run: influx-db-pd
-#
-#    - path: /seaview/zigbee2mqtt.yaml
-#      contents:
-#        inline: |
-#          apiVersion: v1
-#          kind: Pod
-#          metadata:
-#            name: zigbee2mqtt-pd
-#            labels:
-#              run: zigbee2mqtt-pd
-#          spec:
-#            hostNetwork: true
-#            containers:
-#            - image: koenkk/zigbee2mqtt:latest
-#              name: zigbee2mqtt-container
-#              securityContext:
-#                privileged: true
-#              env:
-#              - name: TZ
-#                value: "Europe/Berlin"
-#              ports:
-#              - containerPort: 8011
-#                protocol: TCP
-#              volumeMounts:
-#              - mountPath: /app/data
-#                name: appdata
-#              - mountPath: /dev/ttyACM0
-#                name: ttyacm0
-#            volumes:
-#            - name: ttyacm0
-#              hostPath:
-#                path: /dev/ttyACM0
-#                type: CharDevice
-#            - name: appdata
-#              hostPath:
-#                path: /seaview/zigbee2mqtt
-#                type: Directory
-#          ---
-#          apiVersion: v1
-#          kind: Service
-#          metadata:
-#            name: zigbee2mqtt-pd
-#          spec:
-#            type: NodePort
-#            ports:
-#            - port: 8011
-#              name: 8011tcp
-#              targetPort: 8011
-#              protocol: TCP
-#              nodePort: 8011
-#            selector:
-#              run: zigbee2mqtt-pd
-#
-#    - path: /seaview/node-red.yaml
-#      contents:
-#        inline: |
-#          apiVersion: v1
-#          kind: Pod
-#          metadata:
-#            name: node-red-pd
-#            labels:
-#              run: node-red-pd
-#          spec:
-#            hostNetwork: true
-#            containers:
-#            - image: nodered/node-red
-#              name: node-red-container
-#              env:
-#              - name: TZ
-#                value: "Europe/Berlin"
-#              #ports:
-#              #- containerPort: 1880
-#              #  protocol: TCP
-#              #- containerPort: 2062
-#              #  protocol: TCP
-#              #- containerPort: 2063
-#              #  protocol: TCP
-#              volumeMounts:
-#              - mountPath: /data
-#                name: node-red-data
-#            volumes:
-#            - name: node-red-data
-#              hostPath:
-#                path: /seaview/node-red
-#                type: Directory
-#          #---
-#          #apiVersion: v1
-#          #kind: Service
-#          #metadata:
-#          #  name: node-red-pd
-#          #spec:
-#          #  type: NodePort
-#          #  ports:
-#          #  - port: 1880
-#          #    name: 1880tcp
-#          #    targetPort: 1880
-#          #    protocol: TCP
-#          #    nodePort: 1880
-#          #  - port: 2062
-#          #    name: 2062tcp
-#          #    targetPort: 2062
-#          #    protocol: TCP
-#          #    nodePort: 2062
-#          #  - port: 2063
-#          #    name: 2063tcp
-#          #    targetPort: 2063
-#          #    protocol: TCP
-#          #    nodePort: 2063
-#          #  selector:
-#          #    run: node-red-pd
-#
-#    - path: /seaview/mosquitto.yaml
-#      contents:
-#        inline: |
-#          apiVersion: v1
-#          kind: Pod
-#          metadata:
-#          name: mosquitto-pd
-#          labels:
-#            run: mosquitto-pd
-#          spec:
-#            hostNetwork: true
-#            containers:
-#            - image: library/eclipse-mosquitto
-#              name: mosquitto-container
-#              ports:
-#              - containerPort: 1883
-#                protocol: TCP
-#
-#    - path: /seaview/zwave.yaml
-#      contents:
-#        inline: |
-#          apiVersion: v1
-#          kind: Pod
-#          metadata:
-#            name: zwave-pd
-#            labels:
-#              run: zwave-pd
-#          spec:
-#            containers:
-#            - name: zwave
-#              image: robertslando/zwave2mqtt:latest
-#              securityContext:
-#                privileged: true
-#              ports:
-#              - containerPort: 8091
-#                protocol: TCP
-#              volumeMounts:
-#              - mountPath: /etc/localtime
-#                name: localtime
-#              - mountPath: /usr/src/app/store
-#                name: config
-#              - mountPath: /dev/ttyACM0
-#                name: ttyacm1
-#            volumes:
-#            - name: config
-#              hostPath:
-#                path: /rose/zwave
-#                type: Directory
-#            - name: localtime
-#              hostPath:
-#                path: /etc/localtime
-#                type: File
-#            - name: ttyacm1
-#              hostPath:
-#                path: /dev/ttyACM2
-#                type: CharDevice
-#          ---
-#          apiVersion: v1
-#          kind: Service
-#          metadata:
-#            name: zwave-pd
-#          spec:
-#            type: NodePort
-#            ports:
-#            - port: 8091
-#              name: 8091tcp
-#              targetPort: 8091
-#              protocol: TCP
-#              nodePort: 8091
-#            selector:
-#              run: zwave-p
-#
+    - path: /var/home/core/seaview/influx.yaml
+      contents:
+        inline: |
+          apiVersion: v1
+          kind: Pod
+          metadata:
+            name: influx-db-pd
+            labels:
+              run: influx-db-pd
+          spec:
+            containers:
+            - image: influxdb:latest
+              name: influx-db-container
+              env:
+              - name: TZ
+                value: "PDT"
+              ports:
+              - containerPort: 8086
+                protocol: TCP
+              volumeMounts:
+              - mountPath: /var/lib/influxdb
+                name: influx-db-vol
+            - image: chronograf:latest
+              name: chronograf-container
+              command: ["chronograf", "--influxdb-url=http://127.0.0.1:8086"]
+              env:
+              - name: TZ
+                value: "Europe/Berlin"
+              - name: BOLT_PATH
+                value: "/var/lib/chronograf/chronograf-v1.db"
+              ports:
+              - containerPort: 8888
+                protocol: TCP
+              volumeMounts:
+              - mountPath: /var/lib/chronograf
+                name: chronograf-vol
+          #  - image: telegraf
+          #    name: telegraf-container
+          #    command: ["telegraf", "--influxdb-url=http://192.168.202.4:8086"]
+          #    env:
+          #    - name: TZ
+          ##      value: "Europe/Berlin"
+          #    #ports:
+          #    #- containerPort: 8888
+          #    #  protocol: TCP
+          #    #volumeMounts:
+          #    #- mountPath: /var/lib/chronograf
+          #    #  name: chronograf-vol
+            volumes:
+            - name: chronograf-vol
+              hostPath:
+                path: /var/home/core/seaview/chronograf
+                type: Directory
+            - name: influx-db-vol
+              hostPath:
+                path: /var/home/core/seaview/influx-db
+                type: Directory
+
+          ---
+          apiVersion: v1
+          kind: Service
+          metadata:
+            name: influx-db-pd
+          spec:
+            type: NodePort
+            ports:
+            - port: 8086
+              name: 8086tcp
+              targetPort: 8086
+              protocol: TCP
+              nodePort: 8086
+            - port: 8888
+              name: 8888tcp
+              targetPort: 8888
+              protocol: TCP
+              nodePort: 8888
+            selector:
+              run: influx-db-pd
+
+    - path: /var/home/core/seaview/zigbee2mqtt.yaml
+      contents:
+        inline: |
+          apiVersion: v1
+          kind: Pod
+          metadata:
+            name: zigbee2mqtt-pd
+            labels:
+              run: zigbee2mqtt-pd
+          spec:
+            hostNetwork: true
+            containers:
+            - image: koenkk/zigbee2mqtt:latest
+              name: zigbee2mqtt-container
+              securityContext:
+                privileged: true
+              env:
+              - name: TZ
+                value: "Europe/Berlin"
+              ports:
+              - containerPort: 8011
+                protocol: TCP
+              volumeMounts:
+              - mountPath: /app/data
+                name: appdata
+              - mountPath: /dev/ttyACM0
+                name: ttyacm0
+            volumes:
+            - name: ttyacm0
+              hostPath:
+                path: /dev/ttyACM0
+                type: CharDevice
+            - name: appdata
+              hostPath:
+                path: /var/home/core/seaview/zigbee2mqtt
+                type: Directory
+          ---
+          apiVersion: v1
+          kind: Service
+          metadata:
+            name: zigbee2mqtt-pd
+          spec:
+            type: NodePort
+            ports:
+            - port: 8011
+              name: 8011tcp
+              targetPort: 8011
+              protocol: TCP
+              nodePort: 8011
+            selector:
+              run: zigbee2mqtt-pd
+
+    - path: /var/home/core/seaview/node-red.yaml
+      contents:
+        inline: |
+          apiVersion: v1
+          kind: Pod
+          metadata:
+            name: node-red-pd
+            labels:
+              run: node-red-pd
+          spec:
+            hostNetwork: true
+            containers:
+            - image: nodered/node-red
+              name: node-red-container
+              env:
+              - name: TZ
+                value: "Europe/Berlin"
+              #ports:
+              #- containerPort: 1880
+              #  protocol: TCP
+              #- containerPort: 2062
+              #  protocol: TCP
+              #- containerPort: 2063
+              #  protocol: TCP
+              volumeMounts:
+              - mountPath: /data
+                name: node-red-data
+            volumes:
+            - name: node-red-data
+              hostPath:
+                path: /var/home/core/seaview/node-red
+                type: Directory
+          #---
+          #apiVersion: v1
+          #kind: Service
+          #metadata:
+          #  name: node-red-pd
+          #spec:
+          #  type: NodePort
+          #  ports:
+          #  - port: 1880
+          #    name: 1880tcp
+          #    targetPort: 1880
+          #    protocol: TCP
+          #    nodePort: 1880
+          #  - port: 2062
+          #    name: 2062tcp
+          #    targetPort: 2062
+          #    protocol: TCP
+          #    nodePort: 2062
+          #  - port: 2063
+          #    name: 2063tcp
+          #    targetPort: 2063
+          #    protocol: TCP
+          #    nodePort: 2063
+          #  selector:
+          #    run: node-red-pd
+
+    - path: /var/home/core/seaview/mosquitto.yaml
+      contents:
+        inline: |
+          apiVersion: v1
+          kind: Pod
+          metadata:
+          name: mosquitto-pd
+          labels:
+            run: mosquitto-pd
+          spec:
+            hostNetwork: true
+            containers:
+            - image: library/eclipse-mosquitto
+              name: mosquitto-container
+              ports:
+              - containerPort: 1883
+                protocol: TCP
+
+    - path: /var/home/core/seaview/zwave.yaml
+      contents:
+        inline: |
+          apiVersion: v1
+          kind: Pod
+          metadata:
+            name: zwave-pd
+            labels:
+              run: zwave-pd
+          spec:
+            containers:
+            - name: zwave
+              image: robertslando/zwave2mqtt:latest
+              securityContext:
+                privileged: true
+              ports:
+              - containerPort: 8091
+                protocol: TCP
+              volumeMounts:
+              - mountPath: /etc/localtime
+                name: localtime
+              - mountPath: /usr/src/app/store
+                name: config
+              - mountPath: /dev/ttyACM0
+                name: ttyacm1
+            volumes:
+            - name: config
+              hostPath:
+                path: /rose/zwave
+                type: Directory
+            - name: localtime
+              hostPath:
+                path: /etc/localtime
+                type: File
+            - name: ttyacm1
+              hostPath:
+                path: /dev/ttyACM2
+                type: CharDevice
+          ---
+          apiVersion: v1
+          kind: Service
+          metadata:
+            name: zwave-pd
+          spec:
+            type: NodePort
+            ports:
+            - port: 8091
+              name: 8091tcp
+              targetPort: 8091
+              protocol: TCP
+              nodePort: 8091
+            selector:
+              run: zwave-p
+
     - path: /etc/hostname
       contents:
         inline: seaview

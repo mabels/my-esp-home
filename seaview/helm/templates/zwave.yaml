@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zwave-{{ include "homa.prefix" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "homa.name" . }}
+    helm.sh/chart: {{ include "homa.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount | default 1 }}
+  strategy:
+    type:  {{ .Values.strategy.type }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "homa.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "homa.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      hostNetwork: true
+      containers:
+      - name: zwave
+        image: robertslando/zwave2mqtt:latest
+        securityContext:
+          privileged: true
+        env:
+        - name: TZ
+          value: {{ .Values.timezone }}
+        volumeMounts:
+        - mountPath: /etc/localtime
+          name: localtime
+        - mountPath: /dev/ttyACM0
+          name: ttyacm
+        - mountPath: /usr/src/app/store
+          name: homa-pvc
+          subPath: zwave
+      volumes:
+      - name: homa-pvc
+        persistentVolumeClaim:
+          claimName: {{ .Values.pvcClaim }}
+      - name: localtime
+        hostPath:
+          path: /etc/localtime
+          type: File
+      - name: ttyacm
+        hostPath:
+          path: /dev/null
+          type: CharDevice
+

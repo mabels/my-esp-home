@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: node-red-{{ include "homa.prefix" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "homa.name" . }}
+    helm.sh/chart: {{ include "homa.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount | default 1 }}
+  strategy:
+    type:  {{ .Values.strategy.type }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "homa.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "homa.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      hostNetwork: true
+      initContainers:
+      - name: init
+        image: busybox:latest
+        command: ['/bin/chown', '-vR', '1000:1000', '/node-red']
+        volumeMounts:
+        - name: homa-pvc
+          mountPath: /node-red
+          subPath: node-red
+      containers:
+      - name: node-red-container
+        image: nodered/node-red
+        env:
+        - name: TZ
+          value: {{ .Values.timezone }}
+        volumeMounts:
+        - mountPath: /data
+          name: homa-pvc
+          subPath: node-red
+      volumes:
+      - name: homa-pvc
+        persistentVolumeClaim:
+          claimName: {{ .Values.pvcClaim }}
+

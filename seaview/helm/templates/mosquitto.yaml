@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mosquitto-{{ include "homa.prefix" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "homa.name" . }}
+    helm.sh/chart: {{ include "homa.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount | default 1 }}
+  strategy:
+    type:  {{ .Values.strategy.type }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "homa.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "homa.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      hostNetwork: true
+      containers:
+      - name: mosquitto-{{ .Chart.Name }}
+        image: library/eclipse-mosquitto
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+

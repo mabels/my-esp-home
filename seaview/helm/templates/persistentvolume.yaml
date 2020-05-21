@@ -25,8 +25,7 @@ spec:
       nodeSelectorTerms:
       - matchExpressions:
         - key: kubernetes.io/hostname
-          operator: In
+          operator: NotIn
           values:
-          - {{ .Values.storage.storageClassName }}
-          - clr-6a39e3637aa44c7f891e865d1db9a92d
+          - never-ride-a-banana-boat
 

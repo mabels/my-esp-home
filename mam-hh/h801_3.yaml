@@ -73,23 +73,23 @@ output:
   - platform: esp8266_pwm
     pin: 15
     frequency: 1000 Hz
-    id: pwm_r
+    id: pwm_g
   - platform: esp8266_pwm
     pin: 13
     frequency: 1000 Hz
-    id: pwm_g
+    id: pwm_b
   - platform: esp8266_pwm
     pin: 12
     frequency: 1000 Hz
-    id: pwm_b
+    id: pwm_cw
   - platform: esp8266_pwm
     pin: 14
     frequency: 1000 Hz
-    id: pwm_ww
+    id: pwm_r
   - platform: esp8266_pwm
     pin: 4
     frequency: 1000 Hz
-    id: pwm_cw
+    id: pwm_ww
 
 light:
   - platform: rgbww

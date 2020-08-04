@@ -1,7 +1,8 @@
+{{- if .Values.features.deconz.enabled -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mosquitto-{{ include "homa.prefix" . }}
+  name: deconz-{{ include "homa.prefix" . }}
   labels:
     app.kubernetes.io/name: {{ include "homa.name" . }}
     helm.sh/chart: {{ include "homa.chart" . }}
@@ -23,17 +24,38 @@ spec:
     spec:
       hostNetwork: true
       containers:
-      - name: mosquitto-{{ .Chart.Name }}
-        image: library/eclipse-mosquitto
-        imagePullPolicy: {{ .Values.image.pullPolicy }}
+      - name: deconz
+        image: marthoc/deconz:latest
+        securityContext:
+          privileged: true
         env:
+        - name: DECONZ_DEVICE
+          value: "/dev/ttyACM0"
+        - name: DECONZ_WEB_PORT
+          value: "8999"
+        - name: DECONZ_WS_PORT
+          value: "8998"
         - name: TZ
           value: {{ .Values.timezone }}
         volumeMounts:
-        - mountPath: /mosquitto/config
+        - mountPath: /etc/localtime
+          name: localtime
+        - mountPath: /dev/ttyACM0
+          name: ttyacm
+        - mountPath: /root/.local/share/dresden-elektronik/deCONZ
           name: homa-pvc
-          subPath: mosquitto
+          subPath: deconz
       volumes:
       - name: homa-pvc
         persistentVolumeClaim:
           claimName: {{ .Values.pvcClaim }}
+      - name: localtime
+        hostPath:
+          path: /etc/localtime
+          type: File
+      - name: ttyacm
+        hostPath:
+          path: {{ .Values.features.deconz.tty }}
+          type: CharDevice
+
+{{- end }}

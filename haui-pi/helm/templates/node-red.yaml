@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mosquitto-{{ include "homa.prefix" . }}
+  name: node-red-{{ include "homa.prefix" . }}
   labels:
     app.kubernetes.io/name: {{ include "homa.name" . }}
     helm.sh/chart: {{ include "homa.chart" . }}
@@ -22,18 +22,26 @@ spec:
         app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
       hostNetwork: true
+      initContainers:
+      - name: init
+        image: busybox:latest
+        command: ['/bin/chown', '-vR', '1000:1000', '/node-red']
+        volumeMounts:
+        - name: homa-pvc
+          mountPath: /node-red
+          subPath: node-red
       containers:
-      - name: mosquitto-{{ .Chart.Name }}
-        image: library/eclipse-mosquitto
-        imagePullPolicy: {{ .Values.image.pullPolicy }}
+      - name: node-red-container
+        image: nodered/node-red:latest
         env:
         - name: TZ
           value: {{ .Values.timezone }}
         volumeMounts:
-        - mountPath: /mosquitto/config
+        - mountPath: /data
           name: homa-pvc
-          subPath: mosquitto
+          subPath: node-red
       volumes:
       - name: homa-pvc
         persistentVolumeClaim:
           claimName: {{ .Values.pvcClaim }}
+

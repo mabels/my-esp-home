@@ -1,9 +1,9 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mosquitto-{{ include "homa.prefix" . }}
+  name: tailscale-{{ include "homa.fullname" . }}
   labels:
-    app.kubernetes.io/name: {{ include "homa.name" . }}
+    app.kubernetes.io/name: {{ include "homa.fullname" . }}
     helm.sh/chart: {{ include "homa.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
@@ -13,26 +13,28 @@ spec:
     type:  {{ .Values.strategy.type }}
   selector:
     matchLabels:
-      app.kubernetes.io/name: {{ include "homa.name" . }}
+      app.kubernetes.io/name: {{ include "homa.fullname" . }}
       app.kubernetes.io/instance: {{ .Release.Name }}
   template:
     metadata:
+      annotations:
       labels:
-        app.kubernetes.io/name: {{ include "homa.name" . }}
+        run: {{ include "homa.fullname" . }}
+        app.kubernetes.io/name: {{ include "homa.fullname" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
       hostNetwork: true
       containers:
-      - name: mosquitto-{{ .Chart.Name }}
-        image: library/eclipse-mosquitto
-        imagePullPolicy: {{ .Values.image.pullPolicy }}
-        env:
-        - name: TZ
-          value: {{ .Values.timezone }}
+      - name: tailscale
+        image: fastandfearless/tailscale:latest
+        securityContext:
+          privileged: true
+        command: [ "tailscaled" ]
         volumeMounts:
-        - mountPath: /mosquitto/config
+        - mountPath: /var/lib/tailscale
           name: homa-pvc
-          subPath: mosquitto
+          subPath: tailscaled
+
       volumes:
       - name: homa-pvc
         persistentVolumeClaim:

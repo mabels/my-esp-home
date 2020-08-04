@@ -1,7 +1,8 @@
+{{- if .Values.features.zigbee2mqtt.enabled -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mosquitto-{{ include "homa.prefix" . }}
+  name: zigbee2mqtt-{{ include "homa.prefix" . }}
   labels:
     app.kubernetes.io/name: {{ include "homa.name" . }}
     helm.sh/chart: {{ include "homa.chart" . }}
@@ -23,17 +24,25 @@ spec:
     spec:
       hostNetwork: true
       containers:
-      - name: mosquitto-{{ .Chart.Name }}
-        image: library/eclipse-mosquitto
-        imagePullPolicy: {{ .Values.image.pullPolicy }}
+      - image: koenkk/zigbee2mqtt:latest
+        name: zigbee2mqtt-container
+        securityContext:
+          privileged: true
         env:
         - name: TZ
-          value: {{ .Values.timezone }}
+          value: "Europe/Berlin"
         volumeMounts:
-        - mountPath: /mosquitto/config
+        - mountPath: /app/data
           name: homa-pvc
-          subPath: mosquitto
+          subPath: zigbee2mqtt
+        - mountPath: /dev/ttyACM0
+          name: ttyacm0
       volumes:
+      - name: ttyacm0
+        hostPath:
+          path: {{ .Values.features.zigbee2mqtt.tty }}
+          type: CharDevice
       - name: homa-pvc
         persistentVolumeClaim:
           claimName: {{ .Values.pvcClaim }}
+{{- end }}

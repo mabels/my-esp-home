@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mosquitto-{{ include "homa.prefix" . }}
+  name: influxdb-{{ include "homa.prefix" . }}
   labels:
     app.kubernetes.io/name: {{ include "homa.name" . }}
     helm.sh/chart: {{ include "homa.chart" . }}
@@ -23,16 +23,27 @@ spec:
     spec:
       hostNetwork: true
       containers:
-      - name: mosquitto-{{ .Chart.Name }}
-        image: library/eclipse-mosquitto
-        imagePullPolicy: {{ .Values.image.pullPolicy }}
+      - image: influxdb:latest
+        name: influx-db-container
         env:
         - name: TZ
           value: {{ .Values.timezone }}
         volumeMounts:
-        - mountPath: /mosquitto/config
+        - mountPath: /var/lib/influxdb
           name: homa-pvc
-          subPath: mosquitto
+          subPath: influxdb
+      - image: chronograf:latest
+        name: chronograf-container
+        command: ["chronograf", "--influxdb-url=http://127.0.0.1:8086"]
+        env:
+        - name: TZ
+          value: {{ .Values.timezone }}
+        - name: BOLT_PATH
+          value: "/var/lib/chronograf/chronograf-v1.db"
+        volumeMounts:
+        - mountPath: /var/lib/chronograf
+          name: homa-pvc
+          subPath: chronograf
       volumes:
       - name: homa-pvc
         persistentVolumeClaim:

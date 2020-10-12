@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zigbee2mqtt-{{ include "homa.prefix" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "homa.name" . }}
+    helm.sh/chart: {{ include "homa.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount | default 1 }}
+  strategy:
+    type:  {{ .Values.strategy.type }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "homa.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "homa.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      hostNetwork: true
+      containers:
+      - image: koenkk/zigbee2mqtt:latest
+        name: zigbee2mqtt-container
+        securityContext:
+          privileged: true
+        env:
+        - name: TZ
+          value: "Europe/Berlin"
+        volumeMounts:
+        - mountPath: /app/data
+          name: homa-pvc
+          subPath: zigbee2mqtt
+        - mountPath: /dev/ttyACM0
+          name: ttyacm0
+      volumes:
+      - name: ttyacm0
+        hostPath:
+          path: /dev/ttyACM0
+          type: CharDevice
+      - name: homa-pvc
+        persistentVolumeClaim:
+          claimName: {{ .Values.pvcClaim }}

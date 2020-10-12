@@ -1,0 +1,26 @@
+# Default values for iteraplan.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+strategy:
+  type: RollingUpdate
+
+image:
+  pullPolicy: Always # we reuse tags, when we build an image
+
+nameOverride: "mam-hh-homa"
+fullnameOverride: "mam-hh-homa"
+
+timezone: "PDT"
+pvcClaim: "mam-hh-homa-pvc"
+
+storage:
+  size: 60Gi
+  storageClassName: "mam-hh-homa"
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

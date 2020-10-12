@@ -25,15 +25,24 @@ spec:
     spec:
       hostNetwork: true
       containers:
-      - name: tailscale
+      - name: tailscale-meno
         image: fastandfearless/tailscale:latest
         securityContext:
           privileged: true
-        command: [ "tailscaled" ]
+        command: [ "tailscaled", "--tun=tailscale0", "--port=6767"]
         volumeMounts:
         - mountPath: /var/lib/tailscale
           name: homa-pvc
-          subPath: tailscaled
+          subPath: tailscaled-meno
+      - name: tailscale-malte
+        image: fastandfearless/tailscale:latest
+        securityContext:
+          privileged: true
+        command: [ "tailscaled", "--tun=tailscale1", "--port=6768"]
+        volumeMounts:
+        - mountPath: /var/lib/tailscale
+          name: homa-pvc
+          subPath: tailscaled-malte
 
       volumes:
       - name: homa-pvc

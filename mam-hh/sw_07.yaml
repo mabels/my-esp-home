@@ -44,88 +44,88 @@ binary_sensor:
     id: gpio14
     name: "unten-links"
     pin: GPIO14
-    #on_multi_click:
-    #- timing:
-    #     - ON for 0.2s to 1s
-    #     - OFF for at least 0.3s
-    #  then:
-    #    # - logger.log: "Oben-Links Single Long Clicked"
-    #    - mqtt.publish:
-    #        topic: ${device_name}/binary_sensor/unten-links/PRESS_LONG
-    #        payload: "PRESS_LONG"
-    #- timing:
-    #    - ON for at most 0.2s
-    #    - OFF for at least 0.1s
-    #  then:
-    #    # - logger.log: "Open-Links Single Short Clicked"
-    #    - mqtt.publish:
-    #        topic: ${device_name}/binary_sensor/unten-links/PRESS_SHORT
-    #        payload: "PRESS_SHORT"
+    on_multi_click:
+    - timing:
+         - ON for 0.2s to 1s
+         - OFF for at least 0.3s
+      then:
+        # - logger.log: "Oben-Links Single Long Clicked"
+        - mqtt.publish:
+            topic: ${device_name}/binary_sensor/unten-links/PRESS_LONG
+            payload: "PRESS_LONG"
+    - timing:
+        - ON for at most 0.2s
+        - OFF for at least 0.1s
+      then:
+        # - logger.log: "Open-Links Single Short Clicked"
+        - mqtt.publish:
+            topic: ${device_name}/binary_sensor/unten-links/PRESS_SHORT
+            payload: "PRESS_SHORT"
 
 
   - platform: gpio
     id: gpio12
     name: "unten-rechts"
     pin: GPIO12
-    #on_multi_click:
-    #- timing:
-    #    - ON for 0.2s to 1s
-    #    - OFF for at least 0.3s
-    #  then:
-    #    # - logger.log: "Oben-Links Single Long Clicked"
-    #    - mqtt.publish:
-    #        topic: ${device_name}/binary_sensor/unten-rechts/PRESS_LONG
-    #        payload: "PRESS_LONG"
-    #- timing:
-    #    - ON for at most 0.2s
-    #    - OFF for at least 0.1s
-    #  then:
-    #    # - logger.log: "Open-Links Single Short Clicked"
-    #    - mqtt.publish:
-    #        topic: ${device_name}/binary_sensor/unten-rechts/PRESS_SHORT
-    #        payload: "PRESS_SHORT"
-#
+    on_multi_click:
+    - timing:
+        - ON for 0.2s to 1s
+        - OFF for at least 0.3s
+      then:
+        # - logger.log: "Oben-Links Single Long Clicked"
+        - mqtt.publish:
+            topic: ${device_name}/binary_sensor/unten-rechts/PRESS_LONG
+            payload: "PRESS_LONG"
+    - timing:
+        - ON for at most 0.2s
+        - OFF for at least 0.1s
+      then:
+        # - logger.log: "Open-Links Single Short Clicked"
+        - mqtt.publish:
+            topic: ${device_name}/binary_sensor/unten-rechts/PRESS_SHORT
+            payload: "PRESS_SHORT"
+
   - platform: gpio
     id: gpio13
     name: "oben-rechts"
     pin: GPIO13
-#    on_multi_click:
-#    - timing:
-#        - ON for 0.2s to 1s
-#        - OFF for at least 0.3s
-#      then:
-#        # - logger.log: "Oben-Links Single Long Clicked"
-#        - mqtt.publish:
-#            topic: ${device_name}/binary_sensor/oben-rechts/PRESS_LONG
-#            payload: "PRESS_LONG"
-#    - timing:
-#        - ON for at most 0.2s
-#        - OFF for at least 0.1s
-#      then:
-#        # - logger.log: "Open-Links Single Short Clicked"
-#        - mqtt.publish:
-#           topic: ${device_name}/binary_sensor/oben-rechts/PRESS_SHORT
-#           payload: "PRESS_SHORT"
-#
+    on_multi_click:
+    - timing:
+        - ON for 0.2s to 1s
+        - OFF for at least 0.3s
+      then:
+        # - logger.log: "Oben-Links Single Long Clicked"
+        - mqtt.publish:
+            topic: ${device_name}/binary_sensor/oben-rechts/PRESS_LONG
+            payload: "PRESS_LONG"
+    - timing:
+        - ON for at most 0.2s
+        - OFF for at least 0.1s
+      then:
+        # - logger.log: "Open-Links Single Short Clicked"
+        - mqtt.publish:
+           topic: ${device_name}/binary_sensor/oben-rechts/PRESS_SHORT
+           payload: "PRESS_SHORT"
+
   - platform: gpio
     id: gpio16
     name: "oben-links"
     pin: GPIO16
-#    on_multi_click:
-##    - timing:
-#        - ON for 0.2s to 1s
-#        - OFF for at least 0.3s
-#      then:
-#        # - logger.log: "Oben-Links Single Long Clicked"
-#        - mqtt.publish:
-#            topic: ${device_name}/binary_sensor/oben-links/PRESS_LONG
-#            payload: "PRESS_LONG"
-#    - timing:
-#        - ON for at most 0.2s
-#        - OFF for at least 0.1s
-#      then:
-#        # - logger.log: "Open-Links Single Short Clicked"
-#        - mqtt.publish:
-#            topic: ${device_name}/binary_sensor/oben-links/PRESS_SHORT
-#            payload: "PRESS_SHORT"
-#
+    on_multi_click:
+    - timing:
+        - ON for 0.2s to 1s
+        - OFF for at least 0.3s
+      then:
+        # - logger.log: "Oben-Links Single Long Clicked"
+        - mqtt.publish:
+            topic: ${device_name}/binary_sensor/oben-links/PRESS_LONG
+            payload: "PRESS_LONG"
+    - timing:
+        - ON for at most 0.2s
+        - OFF for at least 0.1s
+      then:
+        # - logger.log: "Open-Links Single Short Clicked"
+        - mqtt.publish:
+            topic: ${device_name}/binary_sensor/oben-links/PRESS_SHORT
+            payload: "PRESS_SHORT"
+

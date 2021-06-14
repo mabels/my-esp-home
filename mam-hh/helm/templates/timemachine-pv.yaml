@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: timemachine-pv
+  annotations:
+    "helm.sh/resource-policy": keep
+  labels:
+    type: local
+    for_app: homa
+spec:
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: local-storage
+  capacity:
+    storage: 8000Gi
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  local:
+    path: /drd/timemachine
+    #  hostPath:
+    #type: DirectoryOrCreate
+    #path: /{{ .Values.storage.storageClassName }}
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: NotIn
+          values:
+          - never-ride-a-banana-boat
+

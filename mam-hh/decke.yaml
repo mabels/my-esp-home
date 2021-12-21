@@ -1,0 +1,58 @@
+substitutions:
+  device_name: decke
+  wifi_ssid: !secret wifi_ssid
+  wifi_password: !secret wifi_password
+  mqtt: !secret mqtt
+
+esphome:
+  name: ${device_name}
+  platform: ESP8266
+  board: esp01_1m
+
+wifi:
+  ssid: ${wifi_ssid}
+  password: ${wifi_password}
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  #  ap:
+  #  ssid: "Tini Fallback Hotspot"
+  #  password: "5FeZ03Jxrwhl"
+
+  #captive_portal:
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+#api:
+
+ota:
+
+mqtt:
+  broker: ${mqtt}
+#  port: 1883
+
+sensor:
+  - platform: uptime
+    name: uptime
+  - platform: wifi_signal
+    name: Wi-Fi_Signal
+    update_interval: 60s
+
+output:
+  - platform: esp8266_pwm
+    pin: 12
+    frequency: 1000 Hz
+    id: pwm_ww
+  - platform: esp8266_pwm
+    pin: 16
+    frequency: 1000 Hz
+    id: pwm_cw
+
+light:
+  - platform: cwww
+    name: "cwww"
+    cold_white: pwm_ww
+    warm_white: pwm_cw
+    cold_white_color_temperature: 6536 K
+    warm_white_color_temperature: 2000 K

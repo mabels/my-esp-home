@@ -1,0 +1,79 @@
+substitutions:
+  plug_name: pixel
+  mqtt: !secret mqtt
+  wifi_ssid: !secret wifi_ssid
+  wifi_password: !secret wifi_password
+
+esphome:
+  name: ${plug_name}
+  platform: ESP8266
+  board: d1_mini
+  #includes:
+  #  - udp-context.h
+  #  - lifx-light.h
+
+wifi:
+  ssid: ${wifi_ssid}
+  password: ${wifi_password}
+  reboot_timeout: 3600s
+
+# Enable logging
+logger:
+#  baud_rate: 0
+
+# Enable Home Assistant API
+#api:
+
+captive_portal:
+
+# Enable logging
+
+ota:
+
+mqtt:
+  broker: ${mqtt}
+
+sensor:
+  - platform: uptime
+    name: uptime
+  
+  - platform: wifi_signal
+    name: Wi-Fi_Signal
+    update_interval: 60s
+
+light:
+  - platform: fastled_spi
+    id: my_light
+    chipset: P9813
+    data_pin: D1
+    clock_pin: D2
+    num_leds: 3
+    rgb_order: BRG
+    name: "Pixel"
+    max_refresh_rate: 10ms
+    effects:
+      - addressable_lambda:
+          name: cbyc
+          update_interval: 1s
+          lambda: |-
+            static int state = 0;
+            auto call = id(my_light).turn_on();
+            call.set_transition_length(1000);
+            ESPColor val;
+            if (state % 3 == 0) {
+              val = ESPColor(1.0, 0, 0);
+            } else if (state % 3 == 1) {
+              val = ESPColor(0, 1.0, 0.0);
+            } else if (state % 3 == 2) {
+              val = ESPColor(0.0, 0.0, 1.0);
+            } 
+            it[state/3] = val;
+            call.perform();
+            state += 1;
+            if (state == 6)
+              state = 0;
+      - addressable_rainbow:
+      - addressable_rainbow:
+          name: Rainbow Effect With Custom Values
+          speed: 10
+          width: 1

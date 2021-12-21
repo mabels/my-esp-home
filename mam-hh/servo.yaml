@@ -1,0 +1,100 @@
+substitutions:
+  plug_name: servo
+  mqtt: !secret mqtt
+  wifi_ssid: !secret wifi_ssid
+  wifi_password: !secret wifi_password
+
+esphome:
+  name: ${plug_name}
+  platform: ESP8266
+  board: d1_mini
+  #includes:
+  #  - udp-context.h
+  #  - lifx-light.h
+
+wifi:
+  ssid: ${wifi_ssid}
+  password: ${wifi_password}
+  reboot_timeout: 3600s
+
+# Enable logging
+#logger:
+#  baud_rate: 0
+
+# Enable Home Assistant API
+#api:
+
+captive_portal:
+
+# Enable logging
+
+  #api:
+  #services:
+  #  - service: control_servo
+  #    variables:
+  #      level: float
+  #    then:
+  #      - servo.write:
+  #          id: my_servo
+  #          level: !lambda 'return level / 100.0;'
+
+
+ota:
+
+logger:
+  level: debug
+
+mqtt:
+  broker: ${mqtt}
+  id: mqtt_client
+  on_message:
+    topic: servo/move
+    qos: 0
+    then:
+      id(mqtt_client).subscribe_json("servo/test", [=](JsonObject &root) {
+        id(my_servo).write(root['move']);
+      });
+
+#  port: 1883
+#
+#
+#sensor:
+#  - platform: uptime
+#    name: uptime
+#  
+#  - platform: wifi_signal
+#    name: Wi-Fi_Signal
+#    update_interval: 60s
+#
+#input_number:
+#  servo_control:
+#    name: Servo Control
+#    initial: 0
+#    min: -100
+#    max: 100
+#    step: 1
+#    mode: slider
+
+#automation:
+#  - alias: Write Servo Value to ESP
+#    trigger:
+#      platform: state
+#      entity_id: input_number.servo_control
+#    action:
+#      # Replace livingroom with the name you gave the ESP
+#      - service: esphome.livingroom_control_servo
+#        data_template:
+#          level: '{{ trigger.to_state.state | int }}'
+
+servo:
+  - id: my_servo
+    output: pwm_output
+
+# Example output platform
+# On ESP32, use ledc output
+output:
+  - platform: esp8266_pwm
+    id: pwm_output
+    pin: D1
+    frequency: 50 Hz
+

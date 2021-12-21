@@ -1,0 +1,61 @@
+substitutions:
+  plug_name: tisch
+  mqtt: !secret mqtt
+  wifi_ssid: !secret wifi_ssid
+  wifi_password: !secret wifi_password
+  
+esphome:
+  name: ${plug_name}
+  platform: ESP32
+  #board: nodemcu-32s
+  board: esp32doit-devkit-v1
+  #board: esp32dev
+
+wifi:
+  ssid: ${wifi_ssid}
+  password: ${wifi_password}
+  reboot_timeout: 3600s
+
+# Enable logging
+logger:
+#   baud_rate: 0
+
+# Enable Home Assistant API
+#api:
+
+ota:
+
+mqtt:
+  broker: ${mqtt}
+#  port: 1883
+
+sensor:
+  - platform: uptime
+    name: uptime
+  - platform: wifi_signal
+    name: Wi-Fi_Signal
+    update_interval: 60s
+    
+text_sensor:
+  - platform: version
+    name: "ESPHomeVersion"
+
+output:
+  - platform: ledc
+    pin: GPIO14
+    frequency: 1000 Hz
+    id: gpo14
+  - platform: ledc
+    pin: GPIO27
+    frequency: 1000 Hz
+    id: gpo27
+
+light:
+  - platform: monochromatic
+    output: gpo14
+    name: "gpo14"
+
+  - platform: monochromatic
+    output: gpo27
+    name: "gpo27"
+

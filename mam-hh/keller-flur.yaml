@@ -1,5 +1,5 @@
 substitutions:
-  plug_name: kg_flur
+  plug_name: keller-flur
   mqtt: !secret mqtt
   wifi_ssid: !secret wifi_ssid
   wifi_password: !secret wifi_password
@@ -22,12 +22,13 @@ logger:
 #  baud_rate: 0
 
 # Enable Home Assistant API
-#api:
+api:
 
 ota:
 
-mqtt:
-  broker: ${mqtt}
+  #mqtt:
+  #  broker: ${mqtt}
+  #discovery_unique_id_generator: mac
 #  port: 1883
 #
 #
@@ -52,7 +53,7 @@ output:
 
 light:
   - platform: cwww
-    name: "led120x15"
+    name: "Keller Flur"
     cold_white: pwm_cw
     warm_white: pwm_ww
     cold_white_color_temperature: 6536 K

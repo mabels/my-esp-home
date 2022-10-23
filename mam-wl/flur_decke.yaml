@@ -29,13 +29,19 @@ ota:
 
 mqtt:
   broker: ${mqtt}
+  discovery_unique_id_generator: mac
 #  port: 1883
-  
-switch:
-  - platform: gpio
-    name: "flur_decke"
-    pin: GPIO04
 
+output:
+  - platform: gpio
+    pin: GPIO04
+    id: relay_1
+
+light:
+  - platform: binary
+    name: "Flur Decke"
+    id: flur_decke
+    output: relay_1
     
 sensor:
   - platform: uptime

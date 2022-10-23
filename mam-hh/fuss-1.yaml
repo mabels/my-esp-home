@@ -1,0 +1,120 @@
+substitutions:
+  device_name: fuss-1
+  wifi_ssid: !secret wifi_ssid
+  wifi_password: !secret wifi_password
+  mqtt: !secret mqtt
+
+esphome:
+  name: ${device_name}
+
+esp32:
+  board: esp32dev
+
+wifi:
+  ssid: ${wifi_ssid}
+  password: ${wifi_password}
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  #  ap:
+  #  ssid: "Tini Fallback Hotspot"
+  #  password: "5FeZ03Jxrwhl"
+
+  #captive_portal:
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+
+ota:
+
+#mqtt:
+#  broker: ${mqtt}
+#  discovery_unique_id_generator: mac
+#  port: 1883
+
+sensor:
+  - platform: uptime
+    name: uptime
+  - platform: wifi_signal
+    name: Wi-Fi_Signal
+    update_interval: 60s
+
+  - platform: ntc
+    name: boden
+    sensor: resistance_sensor_boden
+    calibration:
+      b_constant: 3950
+      reference_temperature: 25°C
+      reference_resistance: 100kOhm
+
+  - platform: adc
+    pin: GPIO32
+    id: source_sensor_boden
+    attenuation: auto
+    # Added:
+    update_interval: never
+    filters:
+      - median:
+          window_size: 10
+          send_every: 10
+          send_first_at: 1
+
+  - platform: resistance
+    id: resistance_sensor_boden
+    sensor: source_sensor_boden
+    configuration: UPSTREAM
+    resistor: 100kOhm
+    name: Resistance Sensor Boden
+
+  - platform: ntc
+    name: luft
+    sensor: resistance_sensor_luft
+    calibration:
+      b_constant: 3950
+      reference_temperature: 25°C
+      reference_resistance: 100kOhm
+
+  - platform: adc
+    pin: GPIO34
+    id: source_sensor_luft
+    attenuation: auto
+    # Added:
+    update_interval: never
+
+  - platform: resistance
+    id: resistance_sensor_luft
+    sensor: source_sensor_luft
+    configuration: UPSTREAM
+    resistor: 100kOhm
+    name: Resistance Sensor Luft
+
+
+switch:
+  - platform: gpio
+    pin: GPIO19
+    id: ntc_vcc_luft0
+
+  - platform: gpio
+    pin: GPIO19
+    id: ntc_vcc_boden
+
+  - platform: gpio
+    pin: GPIO21
+    id: ntc_vcc_luft1
+
+interval:
+  - interval: 1s
+    then:
+      - switch.turn_on: ntc_vcc_boden
+      - component.update: source_sensor_boden
+      - switch.turn_off: ntc_vcc_boden
+  - interval: 60s
+    then:
+      - switch.turn_on: ntc_vcc_luft0
+      - switch.turn_on: ntc_vcc_luft1
+      - component.update: source_sensor_luft
+      - switch.turn_off: ntc_vcc_luft0
+      - switch.turn_off: ntc_vcc_luft1
+

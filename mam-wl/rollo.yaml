@@ -7,8 +7,8 @@ esphome:
   name: rollo
   platform: ESP8266
   board: esp01_1m
-  includes:
-    - ../rollo.h
+  #includes:
+  #  - ../cover.h
 
 wifi:
   ssid: ${wifi_ssid}
@@ -31,6 +31,7 @@ ota:
 
 mqtt:
   broker: ${mqtt}
+  discovery_unique_id_generator: mac
 #   on_message:
 #     - topic: rollo/action
 #       then:
@@ -47,14 +48,37 @@ i2c:
   sda: GPIO12
   scl: GPIO14
 
-custom_component:
-  - lambda: |-
-      auto my_rollo = new Rollo();
-      my_rollo->set_name("wuhu");
-      my_rollo->set_open_switch(id(up_relay));
-      my_rollo->set_close_switch(id(down_relay));
-      App.register_component(my_rollo);
-      return {my_rollo};
+
+cover:
+  - platform: time_based
+    name: "Schlafzimmer"
+
+    open_action:
+      - switch.turn_off: down_relay
+      - switch.turn_on: up_relay
+    open_duration: 30sec
+
+    close_action:
+      - switch.turn_off: up_relay
+      - switch.turn_on: down_relay
+    close_duration: 30sec
+
+    stop_action:
+      - switch.turn_off: up_relay
+      - switch.turn_off: down_relay
+# cover:
+#   - platform: custom
+#     lambda: |-
+#       auto my_rollo = new ShellyCover();
+#       //my_rollo->set_name("wuhu");
+#       //my_rollo->set_open_switch(id(up_relay));
+#       //my_rollo->set_close_switch(id(down_relay));
+#       App.register_component(my_rollo);
+#       return {my_rollo};
+
+#     covers:
+#       - name: "schlafzimmer"
+  
   
 # binary_sensor:
 #   - platform: gpio
@@ -145,12 +169,14 @@ switch:
     name: "up_relay"
     pin: GPIO15
     restore_mode: ALWAYS_OFF
+    interlock: [down_relay]
     
   - platform: gpio
     id: down_relay
     name: "down_relay"
     pin: GPIO4
     restore_mode: ALWAYS_OFF 
+    interlock: [up_relay]
   
 
 

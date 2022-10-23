@@ -31,6 +31,7 @@ ota:
 
 mqtt:
   broker: ${mqtt}
+  discovery_unique_id_generator: mac
 #   on_message:
 #     - topic: rollo/action
 #       then:

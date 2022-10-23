@@ -28,6 +28,7 @@ ota:
 
 mqtt:
   broker: ${mqtt}
+  discovery_unique_id_generator: mac
 #  port: 1883
 #
 #
@@ -64,7 +65,7 @@ output:
 
 light:
   - platform: cwww
-    name: "led120x15"
+    name: "Flur Keller"
     cold_white: pwm_g
     warm_white: pwm_b
     cold_white_color_temperature: 6536 K

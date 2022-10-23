@@ -2,14 +2,15 @@ substitutions:
   plug_name: mvp_rahmen
   wifi_ssid: !secret wifi_ssid
   wifi_password: !secret wifi_password
+  mqtt: !secret mqtt
 
 esphome:
   name: ${plug_name}
   platform: ESP8266
-  board: d1_mini
-  includes:
-    - udp-context.h
-    - lifx-light.h
+  board: esp01_1m
+#  includes:
+#- udp-context.h
+#- lifx-light.h
 
 wifi:
   ssid: ${wifi_ssid}
@@ -26,10 +27,20 @@ logger:
 ota:
 
 mqtt:
-  broker: 192.168.202.4
+  broker: ${mqtt}
+  discovery_unique_id_generator: mac
 #  port: 1883
 
 light:
+  - platform: neopixelbus
+    type: GRBW
+    variant: SK6812
+    pin: GPIO2
+    num_leds: 52
+    #rgb_order: GRB
+    id: leds
+    name: "leds"
+
   #  - platform: neopixelbus
   #  default_transition_length: 1s
   #  type: GRBW
@@ -74,13 +85,13 @@ light:
   #         reverse: False
 
 sensor:
-  - platform: custom
-    lambda: |-
-      auto my_lifx_light = new LifxLight();
-      App.register_component(my_lifx_light);
-      return {my_lifx_light};
-    sensors:
-      name: "MyLifxLight"
+  #  - platform: custom
+  #  lambda: |-
+  #    auto my_lifx_light = new LifxLight();
+  #    App.register_component(my_lifx_light);
+  #    return {my_lifx_light};
+  #  sensors:
+  #    name: "MyLifxLight"
 
   - platform: uptime
     name: uptime

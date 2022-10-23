@@ -28,6 +28,7 @@ ota:
 
 mqtt:
   broker: ${mqtt}
+  discovery_unique_id_generator: mac
 #  port: 1883
 
 

@@ -6,11 +6,20 @@ substitutions:
 
 esphome:
   name: ${plug_name}
-  platform: ESP8266
+#  includes:
+#    - my.h
+#X  libraries:
+#X    - fastled/FastLED@3.3.2 
+  #platform: ESP8266
+
+#esp32:
+#   board: esp32doit-devkit-v1
+
+esp8266:
+  #board: esp01_1m
   board: d1_mini
-  #includes:
-  #  - udp-context.h
-  #  - lifx-light.h
+  framework:
+    version: 2.7.4
 
 wifi:
   ssid: ${wifi_ssid}
@@ -32,6 +41,7 @@ ota:
 
 mqtt:
   broker: ${mqtt}
+  discovery_unique_id_generator: mac
 
 sensor:
   - platform: uptime
@@ -41,39 +51,193 @@ sensor:
     name: Wi-Fi_Signal
     update_interval: 60s
 
+#custom_component:
+#- lambda: |-
+#    auto my_custom = new MyCustomComponent();
+#    return {my_custom};
+
+
+
+#Xfastled_bus_spi:
+#X    - id: bla
+#X      chipset: P9813
+#X      data_pin: GPIO0
+#X      clock_pin: GPIO2
+#X      chip_channels: 3
+#X      num_chips: 2
+
+#    - id: blub
+#      chipset: P9813
+#      data_pin: D1
+#      clock_pin: D2
+#      chip_channels: 3
+#      num_chips: 2
+
+#Afastled_bus_clockless:
+#A    - id: bclock
+#A      chipset: WS2812B
+#A      pin: GPIO13
+#A      num_chips: 10
+#A
+#Aoutput:
+#A
+#A  - platform: fastled_bus
+#A    id: output_f4componentr
+#A    channels:
+#A    - bus: bclock
+#A      offset: 0
+#A      num_chips: 4
+#A      channel_offset: 0
+#A      repeat_distance: 3
+#A
+#A  - platform: fastled_bus
+#A    id: output_f4componentg
+#A    channels:
+#A    - bus: bclock
+#A      offset: 0
+#A      num_chips: 4
+#A      channel_offset: 1
+#A      repeat_distance: 3
+#A
+#A  - platform: fastled_bus
+#A    id: output_f4componentb
+#A    channels:
+#A    - bus: bclock
+#A      offset: 0
+#A      num_chips: 4
+#A      channel_offset: 2
+#A      repeat_distance: 3
+#A
+#A  - platform: fastled_bus
+#A    id: output_l6componentr
+#A    channels:
+#A    - bus: bclock
+#A      offset: 4
+#A      num_chips: 6
+#A      channel_offset: 0
+#A      repeat_distance: 3
+#A
+#A  - platform: fastled_bus
+#A    id: output_l6componentg
+#A    channels:
+#A    - bus: bclock
+#A      offset: 4
+#A      num_chips: 6
+#A      channel_offset: 1
+#A      repeat_distance: 3
+#A
+#A  - platform: fastled_bus
+#A    id: output_l6componentb
+#A    channels:
+#A    - bus: bclock
+#A      offset: 4
+#A      num_chips: 6
+#A      channel_offset: 2
+#A      repeat_distance: 3
+#A
+
+#X  - platform: fastled_bus
+#X    id: output_componentc
+#X    channels:
+#X    - bus: bla
+#X      offset: 0
+#X      num_chips: 2
+#X      channel_offset: 1
+#X  - platform: fastled_bus
+#X    id: output_componentw
+#X    channels:
+#X    - bus: bla
+#X      offset: 0
+#X      num_chips: 2
+#X      channel_offset: 2
+#X  - platform: fastled_bus
+#X    id: output_componentb
+#X    channels:
+#X    - bus: bla
+#X      offset: 0
+#X      num_chips: 2
+#X      channel_offset: 3
+#X  - platform: fastled_bus
+#X    id: output_componentg
+#X    channels:
+#X    - bus: bla
+#X      offset: 0
+#X      num_chips: 2
+#X      channel_offset: 5
+
+#    pin: GPIO12
+#    pin: GPIO14
 light:
-  - platform: fastled_spi
-    id: my_light
-    chipset: P9813
-    data_pin: D1
-    clock_pin: D2
-    num_leds: 3
+  - platform: fastled_clockless
+    chipset: WS2812B
+    pin: GPIO13
+    num_leds: 10
     rgb_order: BRG
-    name: "Pixel"
-    max_refresh_rate: 10ms
+    name: "Strip"
     effects:
-      - addressable_lambda:
-          name: cbyc
-          update_interval: 1s
-          lambda: |-
-            static int state = 0;
-            auto call = id(my_light).turn_on();
-            call.set_transition_length(1000);
-            ESPColor val;
-            if (state % 3 == 0) {
-              val = ESPColor(1.0, 0, 0);
-            } else if (state % 3 == 1) {
-              val = ESPColor(0, 1.0, 0.0);
-            } else if (state % 3 == 2) {
-              val = ESPColor(0.0, 0.0, 1.0);
-            } 
-            it[state/3] = val;
-            call.perform();
-            state += 1;
-            if (state == 6)
-              state = 0;
-      - addressable_rainbow:
-      - addressable_rainbow:
-          name: Rainbow Effect With Custom Values
-          speed: 10
-          width: 1
+      - addressable_random_twinkle:
+      - addressable_random_twinkle:
+          name: Random Twinkle Effect With Custom Values
+          twinkle_probability: 5%
+          progress_interval: 32ms
+
+#  - platform: fastled_bus
+#    bus: bla
+#    name: "f1"
+#    rgb_order: BRG
+#    offset: 7
+#    default_transition_length: 0s
+#    color_correct: [100%, 100%, 100%]
+#    num_leds: 3
+
+#A  - platform: rgb
+#A    name: "first4"
+#A    red: output_f4componentr
+#A    green: output_f4componentg
+#A    blue: output_f4componentb
+#A  - platform: rgb
+#A    name: "last6"
+#A    red: output_l6componentr
+#A    green: output_l6componentg
+#A    blue: output_l6componentb
+#    cold_white: output_componentc
+#    warm_white: output_componentw
+
+
+#
+#  - platform: fastled_spi
+#    name: "f2"
+#    id: f2
+#    chipset: P9813
+#    data_pin: D1
+#    clock_pin: D2
+#    num_leds: 1
+#    rgb_order: BRG
+
+#    max_refresh_rate: 10ms
+#    effects:
+#      - addressable_lambda:
+#          name: cbyc
+#          update_interval: 1s
+#          lambda: |-
+#            static int state = 0;
+#            auto call = id(my_light).turn_on();
+#            call.set_transition_length(1000);
+#            ESPColor val;
+#            if (state % 3 == 0) {
+#              val = ESPColor(1.0, 0, 0);
+#            } else if (state % 3 == 1) {
+#              val = ESPColor(0, 1.0, 0.0);
+#            } else if (state % 3 == 2) {
+#              val = ESPColor(0.0, 0.0, 1.0);
+#            } 
+#            it[state/3] = val;
+#            call.perform();
+#            state += 1;
+#            if (state == 6)
+#              state = 0;
+#      - addressable_rainbow:
+#      - addressable_rainbow:
+#          name: Rainbow Effect With Custom Values
+#          speed: 10
+#          width: 1

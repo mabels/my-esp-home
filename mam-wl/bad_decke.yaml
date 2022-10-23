@@ -29,12 +29,19 @@ ota:
 
 mqtt:
   broker: ${mqtt}
+  discovery_unique_id_generator: mac
 #  port: 1883
 
-switch:
+output:
   - platform: gpio
-    name: "bad_decke"
     pin: GPIO04
+    id: relay_1
+
+light:
+  - platform: binary
+    name: "Bad Decke"
+    id: bad_decke
+    output: relay_1
 
 sensor:
   - platform: uptime

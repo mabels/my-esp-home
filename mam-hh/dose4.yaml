@@ -1,4 +1,5 @@
 substitutions:
+  discovery_unique_id_generator: mac
   plug_name: dose4
   wifi_ssid: !secret wifi_ssid
   wifi_password: !secret wifi_password
@@ -33,6 +34,7 @@ ota:
 
 mqtt:
   broker: ${mqtt}
+  discovery_unique_id_generator: mac
 #  port: 1883
   
 time:

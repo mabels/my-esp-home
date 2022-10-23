@@ -32,6 +32,7 @@ ota:
 
 mqtt:
   broker: ${mqtt}
+  discovery_unique_id_generator: mac
 #  port: 1883
   
 #time:
@@ -48,23 +49,27 @@ binary_sensor:
       mode: INPUT_PULLUP
       inverted: True
     on_press:
-      - switch.toggle: relay
+      - light.toggle: unter_schrank
   - platform: status
     name: state
 
+output:
+  - platform: gpio
+    pin: GPIO15
+    id: relay_1
 
-
+light:
+  - platform: binary
+    name: "Unterschrank"
+    id: unter_schrank
+    output: relay_1
 
 switch:
-  - platform: gpio
-    id: relay
-    name: relay
-    icon: mdi:power-socket-eu
-    pin: GPIO15
-    on_turn_on:
-      - switch.turn_on: blue_led
-    on_turn_off:
-      - switch.turn_off: blue_led
+  #  - platform: gpio
+  #  id: relay
+  #  name: relay
+  #  icon: mdi:power-socket-eu
+  #  pin: GPIO15
 
   - platform: gpio
     id: blue_led
@@ -82,25 +87,25 @@ switch:
 #      number: GPIO00
 #      inverted: True
 
-i2c:
-  sda: GPIO12
-  scl: GPIO14
+# i2c:
+#   sda: GPIO12
+#   scl: GPIO14
   
 sensor:
-  - platform: ina219
-    address: 0x40
-    shunt_resistance: 0.1 ohm
-    current:
-      name: "INA219 Current"
-    power:
-      name: "INA219 Power"
-    bus_voltage:
-      name: "INA219 Bus Voltage"
-    shunt_voltage:
-      name: "INA219 Shunt Voltage"
-    max_voltage: 32.0V
-    max_current: 3.2A
-    update_interval: 60s
+#  - platform: ina219
+#    address: 0x40
+#    shunt_resistance: 0.1 ohm
+#    current:
+#      name: "INA219 Current"
+#    power:
+#      name: "INA219 Power"
+#    bus_voltage:
+#      name: "INA219 Bus Voltage"
+#    shunt_voltage:
+#      name: "INA219 Shunt Voltage"
+#    max_voltage: 32.0V
+#    max_current: 3.2A
+#    update_interval: 60s
 #sensor:
 #  - platform: hlw8012
 #    sel_pin:

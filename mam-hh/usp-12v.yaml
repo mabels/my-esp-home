@@ -1,0 +1,86 @@
+substitutions:
+  plug_name: usp-12v
+  mqtt: !secret mqtt
+  wifi_ssid: !secret wifi_ssid
+  wifi_password: !secret wifi_password
+  
+esphome:
+  name: ${plug_name}
+  platform: ESP32
+  board: nodemcu-32s
+  #board: esp32doit-devkit-v1
+  #board: esp32dev
+
+wifi:
+  ssid: ${wifi_ssid}
+  password: ${wifi_password}
+  reboot_timeout: 3600s
+
+# Enable logging
+logger:
+#   baud_rate: 0
+
+# Enable Home Assistant API
+#api:
+
+ota:
+
+mqtt:
+  broker: ${mqtt}
+  discovery_unique_id_generator: mac
+#  port: 1883
+
+i2c:
+  sda: 21
+  scl: 22
+  scan: true
+  id: bus_a
+
+
+sensor:
+  - platform: uptime
+    name: uptime
+  - platform: wifi_signal
+    name: Wi-Fi_Signal
+    update_interval: 60s
+  - platform: ina3221
+    address: 0x40
+    update_interval: 5s
+    channel_1:
+      shunt_resistance: 0.0015 ohm
+      current:
+        accuracy_decimals: 6
+        name: "INA3221 Channel 1 Current"
+      power:
+        accuracy_decimals: 6
+        name: "INA3221 Channel 1 Power"
+      bus_voltage:
+        accuracy_decimals: 6
+        name: "INA3221 Channel 1 Bus Voltage"
+      shunt_voltage:
+        accuracy_decimals: 6
+        name: "INA3221 Channel 1 Shunt Voltage"
+    channel_2:
+      shunt_resistance: 0.0015 ohm
+      current:
+        accuracy_decimals: 6
+        name: "INA3221 Channel 2 Current"
+      power:
+        accuracy_decimals: 6
+        name: "INA3221 Channel 2 Power"
+      bus_voltage:
+        accuracy_decimals: 6
+        name: "INA3221 Channel 2 Bus Voltage"
+      shunt_voltage:
+        accuracy_decimals: 6
+        name: "INA3221 Channel 2 Shunt Voltage"
+#    channel_3:
+#      shunt_resistance: 0.1 ohm
+#      current:
+#        name: "INA3221 Channel 3 Current"
+#      power:
+#        name: "INA3221 Channel 3 Power"
+#      bus_voltage:
+#        name: "INA3221 Channel 3 Bus Voltage"
+#      shunt_voltage:
+#        name: "INA3221 Channel 3 Shunt Voltage"

@@ -4,11 +4,11 @@ substitutions:
   mqtt: !secret mqtt
 
 esphome:
-  name: rollo_8
+  name: rollo-8
   platform: ESP8266
   board: esp01_1m
-  includes:
-    - ../rollo.h
+    #includes:
+    #- ../rollo.h
 
 wifi:
   ssid: ${wifi_ssid}
@@ -25,12 +25,13 @@ wifi:
 logger:
 
 # Enable Home Assistant API
-#api:
+api:
 
 ota:
 
-mqtt:
-  broker: ${mqtt}
+  #mqtt:
+  #broker: ${mqtt}
+  #discovery_unique_id_generator: mac
 #   on_message:
 #     - topic: rollo/action
 #       then:
@@ -47,15 +48,25 @@ i2c:
   sda: GPIO12
   scl: GPIO14
 
-custom_component:
-  - lambda: |-
-      auto my_rollo = new Rollo();
-      my_rollo->set_name("wuhu");
-      my_rollo->set_open_switch(id(up_relay));
-      my_rollo->set_close_switch(id(down_relay));
-      App.register_component(my_rollo);
-      return {my_rollo};
-  
+cover:
+  - platform: time_based
+    name: "Markise"
+    has_built_in_endstop: true
+
+    open_action:
+      - switch.turn_off: down_relay
+      - switch.turn_on: up_relay
+    open_duration: 60sec
+
+    close_action:
+      - switch.turn_off: up_relay
+      - switch.turn_on: down_relay
+    close_duration: 60sec
+
+    stop_action:
+      - switch.turn_off: up_relay
+      - switch.turn_off: down_relay
+
 # binary_sensor:
 #   - platform: gpio
 #     pin:
@@ -145,12 +156,14 @@ switch:
     name: "up_relay"
     pin: GPIO15
     restore_mode: ALWAYS_OFF
+    interlock: [down_relay]
     
   - platform: gpio
     id: down_relay
     name: "down_relay"
     pin: GPIO4
     restore_mode: ALWAYS_OFF 
+    interlock: [up_relay]
   
 
 

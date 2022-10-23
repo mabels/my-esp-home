@@ -32,6 +32,7 @@ ota:
 
 mqtt:
   broker: ${mqtt}
+  discovery_unique_id_generator: mac
 #  port: 1883
   
 #time:
@@ -48,20 +49,22 @@ binary_sensor:
       mode: INPUT_PULLUP
       inverted: True
     on_press:
-      - switch.toggle: relay
+      - light.toggle: lava_dose
   - platform: status
     name: state
 
-switch:
+output:
   - platform: gpio
-    id: relay
-    name: relay
-    icon: mdi:power-socket-eu
     pin: GPIO15
-    on_turn_on:
-      - switch.turn_on: blue_led
-    on_turn_off:
-      - switch.turn_off: blue_led
+    id: relay_1
+
+light:
+  - platform: binary
+    name: "Lava"
+    id: lava_dose
+    output: relay_1
+
+switch:
 
   - platform: gpio
     id: blue_led

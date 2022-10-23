@@ -1,5 +1,5 @@
 substitutions:
-  plug_name: cob_keller
+  plug_name: keller-bad-led
   mqtt: !secret mqtt
   wifi_ssid: !secret wifi_ssid
   wifi_password: !secret wifi_password
@@ -22,12 +22,13 @@ logger:
 #  baud_rate: 0
 
 # Enable Home Assistant API
-#api:
+api:
 
 ota:
 
-mqtt:
-  broker: ${mqtt}
+  #mqtt:
+  #broker: ${mqtt}
+  #discovery_unique_id_generator: mac
 #  port: 1883
 
   #light:
@@ -93,7 +94,7 @@ output:
 
 light:
   - platform: rgbww
-    name: "H801 Light"
+    name: "panel"
     red: pwm_r
     green: pwm_g
     blue: pwm_b

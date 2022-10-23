@@ -46,6 +46,7 @@ logger:
 
 mqtt:
   broker: ${mqtt}
+  discovery_unique_id_generator: mac
   id: mqtt_client
   on_message:
     topic: servo/move

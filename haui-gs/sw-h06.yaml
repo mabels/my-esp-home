@@ -1,6 +1,5 @@
-# hallo
 substitutions:
-  device_name: sw-h11
+  device_name: sw-h06
   wifi_ssid: !secret wifi_ssid
   wifi_password: !secret wifi_password
   mqtt: !secret mqtt

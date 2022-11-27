@@ -13,132 +13,35 @@ wifi:
 logger:
 api:
 ota:
-mqtt:
-  broker: ${mqtt}
 sensor:
 - platform: uptime
   name: uptime
 - platform: wifi_signal
   name: Wi-Fi_Signal
   update_interval: 60s
+
 binary_sensor:
 - platform: gpio
   id: blau
   name: unten-links
   pin:
-    number:
-      number:
-        number:
-          number:
-            number:
-              number:
-                number:
-                  number:
-                    number:
-                      number:
-                        number:
-                          number:
-                            number: D5
-                            inverted: true
-                          inverted: true
-                        inverted: true
-                      inverted: true
-                    inverted: true
-                  inverted: true
-                inverted: true
-              inverted: true
-            inverted: true
-          inverted: true
-        inverted: true
-      inverted: true
+    number: D5
     inverted: true
 - platform: gpio
   id: gelb
   name: unten-rechts
   pin:
-    number:
-      number:
-        number:
-          number:
-            number:
-              number:
-                number:
-                  number:
-                    number:
-                      number:
-                        number:
-                          number:
-                            number: D6
-                            inverted: true
-                          inverted: true
-                        inverted: true
-                      inverted: true
-                    inverted: true
-                  inverted: true
-                inverted: true
-              inverted: true
-            inverted: true
-          inverted: true
-        inverted: true
-      inverted: true
+    number: D6
     inverted: true
 - platform: gpio
   id: gruen
   name: oben-rechts
   pin:
-    number:
-      number:
-        number:
-          number:
-            number:
-              number:
-                number:
-                  number:
-                    number:
-                      number:
-                        number:
-                          number:
-                            number: D7
-                            inverted: true
-                          inverted: true
-                        inverted: true
-                      inverted: true
-                    inverted: true
-                  inverted: true
-                inverted: true
-              inverted: true
-            inverted: true
-          inverted: true
-        inverted: true
-      inverted: true
+    number: D7
     inverted: true
 - platform: gpio
   id: weiss
   name: oben-links
   pin:
-    number:
-      number:
-        number:
-          number:
-            number:
-              number:
-                number:
-                  number:
-                    number:
-                      number:
-                        number:
-                          number:
-                            number: D0
-                            inverted: true
-                          inverted: true
-                        inverted: true
-                      inverted: true
-                    inverted: true
-                  inverted: true
-                inverted: true
-              inverted: true
-            inverted: true
-          inverted: true
-        inverted: true
-      inverted: true
+    number: D0
     inverted: true

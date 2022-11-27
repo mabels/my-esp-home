@@ -14,8 +14,6 @@ wifi:
 logger:
 api:
 ota:
-mqtt:
-  broker: ${mqtt}
 sensor:
 - platform: uptime
   name: uptime

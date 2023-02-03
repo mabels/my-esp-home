@@ -1,0 +1,146 @@
+esphome:
+  name: "rollos-lr"
+
+esp8266:
+  board: d1_mini
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+
+ota:
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+  use_address: rollos-lr.mam-hh.adviser.com
+
+#captive_portal:
+  
+switch:
+  - platform: gpio
+    name: "Fenster-Down"
+    id: fenster_down
+    pin:
+      number: D4
+      inverted: true
+    restore_mode: ALWAYS_OFF
+    interlock: [fenster_up]
+
+  - platform: gpio
+    name: "Fenster-Up"
+    id: fenster_up
+    pin: 
+      number: D3
+      inverted: true
+    restore_mode: ALWAYS_OFF
+    interlock: [fenster_down]
+
+  - platform: gpio
+    name: "Tuer-Up"
+    id: tuer_up
+    pin: 
+      number: D2
+      inverted: true
+    restore_mode: ALWAYS_OFF
+    interlock: [tuer_down]
+
+  - platform: gpio
+    name: "Tuer-Down"
+    id: tuer_down
+    pin: 
+      number: D1
+      inverted: true
+    restore_mode: ALWAYS_OFF
+    interlock: [tuer_up]
+
+  - platform: gpio
+    name: "Markise-In"
+    id: markise_in
+    pin: 
+      number: D0
+      inverted: true
+    restore_mode: ALWAYS_OFF
+    interlock: [markise_out]
+
+  - platform: gpio
+    name: "Markise-Out"
+    id: markise_out
+    pin: 
+      number: D6
+      inverted: true
+    restore_mode: ALWAYS_OFF
+    interlock: [markise_in]
+
+  # - platform: gpio
+  #   name: "Relay5"
+  #   pin: 
+  #     number: D7
+  #     inverted: true
+  #   restore_mode: ALWAYS_OFF
+
+  # - platform: gpio
+  #   name: "Relay7"
+  #   pin: 
+  #     number: D5
+  #     inverted: true
+  #   restore_mode: ALWAYS_OFF
+
+
+cover:
+  - platform: time_based
+    name: "Fenster"
+
+    has_built_in_endstop: false
+    open_action:
+      - switch.turn_off: fenster_down
+      - switch.turn_on: fenster_up
+    open_duration: 40sec
+
+    close_action:
+      - switch.turn_off: fenster_up
+      - switch.turn_on: fenster_down
+    close_duration: 40sec
+
+    stop_action:
+      - switch.turn_off: fenster_up
+      - switch.turn_off: fenster_down
+
+  - platform: time_based
+    name: "Tuer"
+
+    has_built_in_endstop: false
+    open_action:
+      - switch.turn_off: tuer_down
+      - switch.turn_on: tuer_up
+    open_duration: 40sec
+
+    close_action:
+      - switch.turn_off: tuer_up
+      - switch.turn_on: tuer_down
+    close_duration: 40sec
+
+    stop_action:
+      - switch.turn_off: tuer_up
+      - switch.turn_off: tuer_down
+
+  - platform: time_based
+    name: "Markise"
+
+    has_built_in_endstop: false
+    open_action:
+      - switch.turn_off: markise_in
+      - switch.turn_on: markise_out
+    open_duration: 40sec
+
+    close_action:
+      - switch.turn_off: markise_out
+      - switch.turn_on: markise_in
+    close_duration: 40sec
+
+    stop_action:
+      - switch.turn_off: markise_out
+      - switch.turn_off: markise_in
+

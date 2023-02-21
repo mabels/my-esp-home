@@ -31,15 +31,347 @@ wifi:
     password: "pBgkRyRdCWja"
 
 captive_portal:
+
+
+fastled_bus_spi:
+   - id: fled_bus
+     chip_channels: 3
+     chipset: P9813
+     data_pin: GPIO21
+     clock_pin: GPIO25
+     num_chips: 12
+
+
+output:
+
+  - platform: fastled_bus
+    id: output_f1_g
+    channels:
+    - bus: fled_bus
+      chip_offset: 0
+      num_chips: 1
+      channel_offset: 0
+
+  - platform: fastled_bus
+    id: output_f1_b
+    channels:
+    - bus: fled_bus
+      chip_offset: 0
+      num_chips: 1
+      channel_offset: 1
+
+  - platform: fastled_bus
+    id: output_f1_r
+    channels:
+    - bus: fled_bus
+      chip_offset: 0
+      num_chips: 1
+      channel_offset: 2
+
+  - platform: fastled_bus
+    id: output_f1_cw
+    channels:
+    - bus: fled_bus
+      chip_offset: 1
+      num_chips: 1
+      channel_offset: 1
+
+  - platform: fastled_bus
+    id: output_f1_ww
+    channels:
+    - bus: fled_bus
+      chip_offset: 1
+      num_chips: 1
+      channel_offset: 2
+
+
+  - platform: fastled_bus
+    id: output_f2_g
+    channels:
+    - bus: fled_bus
+      chip_offset: 2
+      num_chips: 1
+      channel_offset: 0
+
+  - platform: fastled_bus
+    id: output_f2_ww
+    channels:
+    - bus: fled_bus
+      chip_offset: 2
+      num_chips: 1
+      channel_offset: 1
+
+  - platform: fastled_bus
+    id: output_f2_r
+    channels:
+    - bus: fled_bus
+      chip_offset: 2
+      num_chips: 1
+      channel_offset: 2
+
+  - platform: fastled_bus
+    id: output_f2_cw
+    channels:
+    - bus: fled_bus
+      chip_offset: 3
+      num_chips: 1
+      channel_offset: 1
+
+  - platform: fastled_bus
+    id: output_f2_b
+    channels:
+    - bus: fled_bus
+      chip_offset: 3
+      num_chips: 1
+      channel_offset: 2
+
+
+  - platform: fastled_bus
+    id: output_f3_g
+    channels:
+    - bus: fled_bus
+      chip_offset: 4
+      num_chips: 1
+      channel_offset: 0
+
+  - platform: fastled_bus
+    id: output_f3_ww
+    channels:
+    - bus: fled_bus
+      chip_offset: 4
+      num_chips: 1
+      channel_offset: 1
+
+  - platform: fastled_bus
+    id: output_f3_r
+    channels:
+    - bus: fled_bus
+      chip_offset: 4
+      num_chips: 1
+      channel_offset: 2
+
+  - platform: fastled_bus
+    id: output_f3_cw
+    channels:
+    - bus: fled_bus
+      chip_offset: 5
+      num_chips: 1
+      channel_offset: 1
+
+  - platform: fastled_bus
+    id: output_f3_b
+    channels:
+    - bus: fled_bus
+      chip_offset: 5
+      num_chips: 1
+      channel_offset: 2
+
     
+  - platform: fastled_bus
+    id: output_f4_g
+    channels:
+    - bus: fled_bus
+      chip_offset: 6
+      num_chips: 1
+      channel_offset: 0
+
+  - platform: fastled_bus
+    id: output_f4_ww
+    channels:
+    - bus: fled_bus
+      chip_offset: 6
+      num_chips: 1
+      channel_offset: 1
+
+  - platform: fastled_bus
+    id: output_f4_r
+    channels:
+    - bus: fled_bus
+      chip_offset: 6
+      num_chips: 1
+      channel_offset: 2
+
+  - platform: fastled_bus
+    id: output_f4_cw
+    channels:
+    - bus: fled_bus
+      chip_offset: 7
+      num_chips: 1
+      channel_offset: 1
+
+  - platform: fastled_bus
+    id: output_f4_b
+    channels:
+    - bus: fled_bus
+      chip_offset: 7
+      num_chips: 1
+      channel_offset: 2
+
+
+  - platform: fastled_bus
+    id: output_f5_g
+    channels:
+    - bus: fled_bus
+      chip_offset: 8
+      num_chips: 1
+      channel_offset: 0
+
+  - platform: fastled_bus
+    id: output_f5_ww
+    channels:
+    - bus: fled_bus
+      chip_offset: 8
+      num_chips: 1
+      channel_offset: 1
+
+  - platform: fastled_bus
+    id: output_f5_r
+    channels:
+    - bus: fled_bus
+      chip_offset: 8
+      num_chips: 1
+      channel_offset: 2
+
+  - platform: fastled_bus
+    id: output_f5_cw
+    channels:
+    - bus: fled_bus
+      chip_offset: 9
+      num_chips: 1
+      channel_offset: 1
+
+  - platform: fastled_bus
+    id: output_f5_b
+    channels:
+    - bus: fled_bus
+      chip_offset: 9
+      num_chips: 1
+      channel_offset: 2
+
+
+  - platform: fastled_bus
+    id: output_f6_g
+    channels:
+    - bus: fled_bus
+      chip_offset: 10
+      num_chips: 1
+      channel_offset: 0
+
+  - platform: fastled_bus
+    id: output_f6_ww
+    channels:
+    - bus: fled_bus
+      chip_offset: 10
+      num_chips: 1
+      channel_offset: 1
+
+  - platform: fastled_bus
+    id: output_f6_r
+    channels:
+    - bus: fled_bus
+      chip_offset: 10
+      num_chips: 1
+      channel_offset: 2
+
+  - platform: fastled_bus
+    id: output_f6_cw
+    channels:
+    - bus: fled_bus
+      chip_offset: 11
+      num_chips: 1
+      channel_offset: 1
+
+  - platform: fastled_bus
+    id: output_f6_b
+    channels:
+    - bus: fled_bus
+      chip_offset: 11
+      num_chips: 1
+      channel_offset: 2
+
 light:
+#  - platform: fastled_spi
+#    chipset: P9813
+#    data_pin: GPIO21
+#    clock_pin: GPIO25
+#    num_leds: 12
+#    rgb_order: RGB
+#    name: "SuperBox"                                                         
   - platform: fastled_spi
-    chipset: P9813
-    data_pin: GPIO21
-    clock_pin: GPIO25
-    num_leds: 12                                                                                                                                                                                                                                                                               
+    bus: fled_bus
     rgb_order: RGB
-    name: "SuperBox"                                                         
+    name: "SuperBox"
+
+
+  - platform: rgbww
+    name: "f1"
+    red: output_f1_r
+    green: output_f1_g
+    blue: output_f1_b
+    cold_white: output_f1_cw
+    warm_white: output_f1_ww
+    cold_white_color_temperature: 6536 K
+    warm_white_color_temperature: 2000 K
+
+
+  - platform: rgbww
+    name: "f2"
+    red: output_f2_r
+    green: output_f2_g
+    blue: output_f2_b
+    cold_white: output_f2_cw
+    warm_white: output_f2_ww
+    cold_white_color_temperature: 6536 K
+    warm_white_color_temperature: 2000 K
+
+
+  - platform: rgbww
+    name: "f3"
+    red: output_f3_r
+    green: output_f3_g
+    blue: output_f3_b
+    cold_white: output_f3_cw
+    warm_white: output_f3_ww
+    cold_white_color_temperature: 6536 K
+    warm_white_color_temperature: 2000 K
+
+
+  - platform: rgbww
+    name: "f4"
+    red: output_f4_r
+    green: output_f4_g
+    blue: output_f4_b
+    cold_white: output_f4_cw
+    warm_white: output_f4_ww
+    cold_white_color_temperature: 6536 K
+    warm_white_color_temperature: 2000 K
+
+
+  - platform: rgbww
+    name: "f5"
+    red: output_f5_r
+    green: output_f5_g
+    blue: output_f5_b
+    cold_white: output_f5_cw
+    warm_white: output_f5_ww
+    cold_white_color_temperature: 6536 K
+    warm_white_color_temperature: 2000 K
+
+
+  - platform: rgbww
+    name: "f6"
+    red: output_f6_r
+    green: output_f6_g
+    blue: output_f6_b
+    cold_white: output_f6_cw
+    warm_white: output_f6_ww
+    cold_white_color_temperature: 6536 K
+    warm_white_color_temperature: 2000 K
+
+
+
+
+
 
 #  - platform: neopixelbus
 #    type: GRB
